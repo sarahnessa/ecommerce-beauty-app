@@ -1196,7 +1196,7 @@ function BlogPage({ onNavigate }: { onNavigate: (page: string) => void }) {
           <Image
             width={900}
             height={900}
-            src="/products/skincare.svg"
+            src={skincareProductImg}
             alt="Daily Cloud Cream product illustration"
           />
           <span>THE EVERYDAY EDIT</span>
