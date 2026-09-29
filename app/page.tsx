@@ -477,6 +477,30 @@ function Header({
             <Icon name="close" />
           </Action>
           <span className="wordmark">DAZE & DEWY</span>
+          <div className="mobile-menu-actions" aria-label="Shopping tools">
+            <Action
+              className="mobile-menu-action"
+              onClick={() => {
+                setMobileOpen(false);
+                setSearchOpen(true);
+              }}
+              ariaLabel="Search products"
+            >
+              <Icon name="search" size={18} />
+              <span>Search</span>
+            </Action>
+            <Action
+              className="mobile-menu-action"
+              onClick={() => {
+                setMobileOpen(false);
+                onCart();
+              }}
+              ariaLabel={`Open bag, ${cartCount} items`}
+            >
+              <Icon name="bag" size={19} />
+              <span>Bag ({cartCount})</span>
+            </Action>
+          </div>
           {["home", "shop", "new", "about", "contact"].map((item) => (
             <NavLink
               key={item}
@@ -1163,7 +1187,7 @@ function BlogPage({ onNavigate }: { onNavigate: (page: string) => void }) {
           <Image
             width={900}
             height={900}
-            src="{`${basePath}/products/skincare.svg`}"
+            src="/products/skincare.svg"
             alt="Daily Cloud Cream product illustration"
           />
           <span>THE EVERYDAY EDIT</span>
