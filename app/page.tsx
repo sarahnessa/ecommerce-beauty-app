@@ -15,6 +15,8 @@ type Product = {
 
 type CartItem = Product & { quantity: number };
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 const products: Product[] = [
   {
     id: 1,
@@ -189,7 +191,6 @@ const products: Product[] = [
   },
 ];
 
-const basePath = process.env.__NEXT_ROUTER_BASE_PATH || '';
 
 const categories = ["New", "Skincare", "Makeup", "Bath & Body", "Candles"];
 
