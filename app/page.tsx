@@ -2,6 +2,14 @@
 import Image from "next/image";
 
 import { SubmitEvent, ReactNode, useEffect, useRef, useState } from "react";
+import aboutImg from '../public/about-image.jpg';
+import bodyProductImg from '../public/products/body.svg';
+import candleProductImg from '../public/products/candle.svg';
+import makeupProductImg from '../public/products/makeup.svg';
+import serumProductImg from '../public/products/serum.svg';
+import skincareProductImg from '../public/products/skincare.svg';
+import toolProductImg from '../public/products/tool.svg';
+
 
 type Product = {
   id: number;
@@ -24,7 +32,7 @@ const products: Product[] = [
     category: "Skincare",
     price: 42,
     badge: "New",
-    image: "/products/skincare.svg",
+    image: skincareProductImg,
   },
   {
     id: 2,
@@ -33,7 +41,7 @@ const products: Product[] = [
     category: "Makeup",
     price: 28,
     badge: "Bestseller",
-    image: "/products/makeup.svg",
+    image: makeupProductImg,
   },
   {
     id: 3,
@@ -41,7 +49,7 @@ const products: Product[] = [
     brand: "Daze & Dewy",
     category: "Skincare",
     price: 58,
-    image: "/products/serum.svg",
+    image: serumProductImg,
   },
   {
     id: 4,
@@ -50,7 +58,7 @@ const products: Product[] = [
     category: "Bath & Body",
     price: 64,
     badge: "Exclusive",
-    image: "/products/body.svg",
+    image: bodyProductImg,
   },
   {
     id: 5,
@@ -59,7 +67,7 @@ const products: Product[] = [
     category: "Candles",
     price: 46,
     badge: "New",
-    image: "/products/candle.svg",
+    image: candleProductImg,
   },
   {
     id: 6,
@@ -68,7 +76,7 @@ const products: Product[] = [
     category: "Skincare",
     price: 39,
     badge: "New",
-    image: "/products/skincare.svg",
+    image: skincareProductImg,
   },
   {
     id: 7,
@@ -76,7 +84,7 @@ const products: Product[] = [
     brand: "Studio Form",
     category: "Makeup",
     price: 36,
-    image: "/products/makeup.svg",
+    image: makeupProductImg,
   },
   {
     id: 8,
@@ -84,7 +92,7 @@ const products: Product[] = [
     brand: "Daze & Dewy",
     category: "Tools",
     price: 32,
-    image: "/products/tool.svg",
+    image: toolProductImg,
   },
   {
     id: 9,
@@ -93,7 +101,7 @@ const products: Product[] = [
     category: "Bath & Body",
     price: 36,
     badge: "Bestseller",
-    image: "/products/body.svg",
+    image: bodyProductImg,
   },
   {
     id: 10,
@@ -101,7 +109,7 @@ const products: Product[] = [
     brand: "Soft Ritual",
     category: "Bath & Body",
     price: 38,
-    image: "/products/body.svg",
+    image: bodyProductImg,
   },
   {
     id: 11,
@@ -110,7 +118,7 @@ const products: Product[] = [
     category: "Bath & Body",
     price: 24,
     badge: "New",
-    image: "/products/body.svg",
+    image: bodyProductImg,
   },
   {
     id: 12,
@@ -118,7 +126,7 @@ const products: Product[] = [
     brand: "Soft Ritual",
     category: "Bath & Body",
     price: 42,
-    image: "/products/body.svg",
+    image: bodyProductImg,
   },
   {
     id: 13,
@@ -126,7 +134,7 @@ const products: Product[] = [
     brand: "Bonbon Bloom",
     category: "Skincare",
     price: 22,
-    image: "/products/skincare.svg",
+    image: skincareProductImg,
   },
   {
     id: 14,
@@ -135,7 +143,7 @@ const products: Product[] = [
     category: "Bath & Body",
     price: 32,
     badge: "Exclusive",
-    image: "/products/body.svg",
+    image: bodyProductImg,
   },
   {
     id: 15,
@@ -144,7 +152,7 @@ const products: Product[] = [
     category: "Skincare",
     price: 28,
     badge: "Bestseller",
-    image: "/products/skincare.svg",
+    image: skincareProductImg,
   },
   {
     id: 16,
@@ -152,7 +160,7 @@ const products: Product[] = [
     brand: "Soft Ritual",
     category: "Bath & Body",
     price: 18,
-    image: "/products/body.svg",
+    image: bodyProductImg,
   },
   {
     id: 17,
@@ -161,7 +169,7 @@ const products: Product[] = [
     category: "Bath & Body",
     price: 38,
     badge: "New",
-    image: "/products/serum.svg",
+    image: serumProductImg,
   },
   {
     id: 18,
@@ -169,7 +177,7 @@ const products: Product[] = [
     brand: "Soft Ritual",
     category: "Bath & Body",
     price: 26,
-    image: "/products/body.svg",
+    image: bodyProductImg,
   },
   {
     id: 19,
@@ -177,7 +185,7 @@ const products: Product[] = [
     brand: "Wick & Wonder",
     category: "Candles",
     price: 34,
-    image: "/products/candle.svg",
+    image: candleProductImg,
   },
   {
     id: 20,
@@ -186,7 +194,7 @@ const products: Product[] = [
     category: "Candles",
     price: 58,
     badge: "Exclusive",
-    image: "/products/candle.svg",
+    image: candleProductImg,
   },
 ];
 
@@ -1398,14 +1406,14 @@ function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
               <Image
                 width={800}
                 height={1000}
-                src="/about-image.jpg"
+                src={aboutImg}
                 alt="Close-up portrait of a freckled woman with yellow, pink, and blue eyeshadow"
               />
               <Image
                 width={800}
                 height={1000}
                 className="about-image-soft-blur"
-                src="/about-image.jpg"
+                src={aboutImg}
                 alt=""
                 aria-hidden="true"
               />
