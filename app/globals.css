@@ -3049,14 +3049,14 @@ p {
   z-index: 3;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(188, 172, 221, 0.266), transparent 30%),
+    linear-gradient(180deg, rgba(188, 172, 221, 0.266), transparent 40%),
     linear-gradient(180deg, transparent 28%, rgba(188, 172, 221, 0.266)),
     linear-gradient(90deg, transparent 26%, rgba(246, 152, 219, 0.154));
   mask-image:
-    linear-gradient(to bottom, #000 0%, #000 20%, transparent 30%),
+    linear-gradient(to bottom, #000 0%, #000 20%, transparent 40%),
     radial-gradient(ellipse 66% 42% at 56% 48%, transparent 82%, #000 100%);
   -webkit-mask-image:
-    linear-gradient(to bottom, #000 0%, #000 20%, transparent 30%),
+    linear-gradient(to bottom, #000 0%, #000 20%, transparent 40%),
     radial-gradient(ellipse 66% 42% at 56% 48%, transparent 82%, #000 100%);
   pointer-events: none;
 }
