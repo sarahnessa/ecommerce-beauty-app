@@ -1,17 +1,16 @@
 import type { NextConfig } from "next";
 
 const isProd = process.env.NODE_ENV === 'production';
+const repoName = '/ecommerce-beauty-app';
 
 const nextConfig: NextConfig = {
   output: 'export',
   images: {
     unoptimized: true,
   },
-  basePath: isProd ? '/ecommerce-beauty-app' : '',
-  assetPrefix: '/ecommerce-beauty-app/',
-  env: {
-    NEXT_PUBLIC_BASE_PATH: isProd ? '/ecommerce-beauty-app' : '',
-  },
+  // Only apply prefixes when building for GitHub Pages production
+  basePath: isProd ? repoName : '',
+  assetPrefix: isProd ? `${repoName}/` : '',
 };
 
 export default nextConfig;

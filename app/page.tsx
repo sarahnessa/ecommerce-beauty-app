@@ -15,7 +15,6 @@ type Product = {
 
 type CartItem = Product & { quantity: number };
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 const products: Product[] = [
   {
@@ -418,6 +417,7 @@ function Header({
             <form className="header-search-form" onSubmit={submitSearch}>
               <input
                 ref={searchInputRef}
+                name="search_input"
                 type="search"
                 aria-label="Search products"
                 placeholder="Search products"
@@ -539,7 +539,7 @@ function ProductCard({
           className="product-card-link"
         >
           <Image
-            src={`${basePath}${product.image}`}
+            src={product.image}
             width={900}
             height={900}
             alt={product.name}
@@ -646,7 +646,7 @@ function ProductPage({
           aria-label={`${product.name} product images`}
         >
           <div className="product-gallery-main">
-            <Image width={900} height={900} src={`${basePath}${product.image}`} alt={product.name} />
+            <Image width={900} height={900} src={product.image} alt={product.name} />
             {product.badge && (
               <span className={`product-badge ${product.badge.toLowerCase()}`}>
                 {product.badge}
@@ -654,7 +654,7 @@ function ProductPage({
             )}
           </div>
           <div className="product-gallery-detail">
-            <Image width={900} height={900} src={`${basePath}${product.image}`} alt={`${product.name}, close-up`} />
+            <Image width={900} height={900} src={product.image} alt={`${product.name}, close-up`} />
           </div>
           <div className="product-gallery-note">
             <span className="flower-mark" aria-hidden="true">
@@ -812,6 +812,7 @@ function Home({
           width="0"
           height="0"
           sizes="100vw"
+          loading="eager"
           src="https://images.squarespace-cdn.com/content/v1/546e7120e4b0f42617a4c8b4/1594843139074-CY32GUHYGQBJ1B9R2PFL/San%2BAntonio%2BSenior%2BPhotographer%2B3A9647.jpg"
           alt="Young woman resting among sunflowers in warm daylight"
         />
@@ -1396,15 +1397,15 @@ function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
             <div className="about-image-photo">
               <Image
                 width={800}
-                height={620}
-                src="https://i.mdel.net/i/db/2022/11/1821945/1821945-800w.jpg"
+                height={1000}
+                src="/about-image.jpg"
                 alt="Close-up portrait of a freckled woman with yellow, pink, and blue eyeshadow"
               />
               <Image
                 width={800}
-                height={620}
+                height={1000}
                 className="about-image-soft-blur"
-                src="https://i.mdel.net/i/db/2022/11/1821945/1821945-800w.jpg"
+                src="/about-image.jpg"
                 alt=""
                 aria-hidden="true"
               />
@@ -1514,7 +1515,7 @@ function ContactPage() {
         <form className="contact-form" onSubmit={submit}>
           <label>
             <span>Name</span>
-            <input required name="name" placeholder="Your name" />
+            <input required name="name" placeholder="Your name" autoComplete="name"/>
           </label>
           <label>
             <span>Email</span>
@@ -1523,6 +1524,7 @@ function ContactPage() {
               type="email"
               name="email"
               placeholder="you@email.com"
+              autoComplete="email"
             />
           </label>
           <label>
@@ -1548,7 +1550,8 @@ function ContactPage() {
           </label>
           <Action type="submit" className="form-submit">
             {sent ? "Message sent — thank you" : "Send your note"}
-            <Icon name="arrow" size={18} />
+            {sent ? null : <Icon name="arrow" size={18} />}
+            
           </Action>
         </form>
       </section>
@@ -1570,6 +1573,7 @@ function Footer({ onNavigate }: { onNavigate: (page: string) => void }) {
           <p>New arrivals, rituals, and studio happenings—sent occasionally.</p>
           <div className="email-field">
             <input
+              name="footer_email"
               type="email"
               aria-label="Email address"
               placeholder="Your email address"
@@ -1611,9 +1615,9 @@ function Footer({ onNavigate }: { onNavigate: (page: string) => void }) {
           </div>
           <div>
             <span>FOLLOW</span>
-            <a href="#instagram">Instagram</a>
-            <a href="#pinterest">Pinterest</a>
-            <a href="#tiktok">TikTok</a>
+            <a href="https://www.instagram.com/" target="_blank">Instagram</a>
+            <a href="https://www.pinterest.com/" target="_blank">Pinterest</a>
+            <a href="https://www.tiktok.com/" target="_blank">TikTok</a>
           </div>
         </div>
       </div>
@@ -1794,7 +1798,7 @@ function CartDrawer({
             <div className="cart-items">
               {items.map((item) => (
                 <article className="cart-item" key={item.id}>
-                  <Image width={900} height={900} src={`${basePath}${item.image}`} alt={item.name} />
+                  <Image width={900} height={900} src={item.image} alt={item.name} />
                   <div>
                     <p className="eyebrow">{item.brand}</p>
                     <Heading as="subsection">{item.name}</Heading>
@@ -1839,18 +1843,39 @@ function CartDrawer({
   );
 }
 
+type ShippingMethod = "standard" | "expedited";
+
+type OrderDetails = {
+  email: string;
+  shipping: ShippingMethod;
+  orderNumber: string;
+  estimatedDelivery: string;
+};
+
+function getShippingCost(subtotal: number, method: ShippingMethod) {
+  if (method === "expedited") return 18;
+  return subtotal >= 75 ? 0 : 6;
+}
+
 function CheckoutPage({
   items,
   onNavigate,
+  onContinue,
+  onAddSuggestion,
 }: {
   items: CartItem[];
   onNavigate: (page: string) => void;
+  onContinue: (email: string, shipping: ShippingMethod) => void;
+  onAddSuggestion: (product: Product) => void;
 }) {
-  const [submitted, setSubmitted] = useState(false);
+  const [shipping, setShipping] = useState<ShippingMethod>("standard");
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
+  const suggestions = products
+    .filter((product) => !items.some((item) => item.id === product.id))
+    .slice(0, 3);
 
   return (
     <main className="checkout-page">
@@ -1866,7 +1891,8 @@ function CheckoutPage({
           className="checkout-form"
           onSubmit={(event) => {
             event.preventDefault();
-            setSubmitted(true);
+            const formData = new FormData(event.currentTarget);
+            onContinue(String(formData.get("checkout_email")), shipping);
           }}
         >
           <p className="kicker">Your ritual, nearly there</p>
@@ -1878,6 +1904,7 @@ function CheckoutPage({
             <label>
               Email address
               <input
+                name="checkout_email"
                 type="email"
                 autoComplete="email"
                 required
@@ -1890,30 +1917,28 @@ function CheckoutPage({
             <div className="checkout-fields">
               <label>
                 First name
-                <input autoComplete="given-name" required />
+                <input name="delivery_name" autoComplete="given-name" required />
               </label>
               <label>
                 Last name
-                <input autoComplete="family-name" required />
+                <input name="delivery_last_name" autoComplete="family-name" required />
               </label>
               <label className="checkout-field-wide">
                 Address
-                <input autoComplete="street-address" required />
+                <input name="delivery_address" autoComplete="street-address" required />
               </label>
               <label>
                 City
-                <input autoComplete="address-level2" required />
+                <input name="delivery_address_2" autoComplete="address-level2" required />
               </label>
               <label>
                 Postal code
-                <input autoComplete="postal-code" required />
+                <input name="delivery_postal_code" autoComplete="postal-code" required />
               </label>
               <label className="checkout-field-wide">
                 Country or region
-                <select autoComplete="country-name" defaultValue="">
-                  <option value="" disabled>
-                    Select country or region
-                  </option>
+                <select name="delivery_country" autoComplete="country-name" defaultValue="" required>
+                  <option value="" disabled>Select country or region</option>
                   <option>United States</option>
                   <option>Canada</option>
                   <option>Mexico</option>
@@ -1921,48 +1946,159 @@ function CheckoutPage({
               </label>
             </div>
           </section>
-          <section className="checkout-shipping-choice">
+          <section>
             <Heading as="subsection">Shipping method</Heading>
-            <p>
-              Shipping options and rates will be confirmed for your address.
-            </p>
+            <div className="shipping-options">
+              <label className="shipping-option">
+                <input
+                  type="radio"
+                  name="shipping_method"
+                  value="standard"
+                  checked={shipping === "standard"}
+                  onChange={() => setShipping("standard")}
+                />
+                <span><strong>Standard shipping</strong><small>5–7 business days · USPS</small></span>
+                <b>{subtotal >= 75 ? "Free" : "$6.00"}</b>
+              </label>
+              <label className="shipping-option">
+                <input
+                  type="radio"
+                  name="shipping_method"
+                  value="expedited"
+                  checked={shipping === "expedited"}
+                  onChange={() => setShipping("expedited")}
+                />
+                <span><strong>Expedited shipping</strong><small>2–3 business days · FedEx</small></span>
+                <b>$18.00</b>
+              </label>
+            </div>
+            <p className="shipping-free-note">Standard shipping is on us when your order is $75 or more.</p>
           </section>
           <Action className="checkout-button checkout-continue" type="submit">
             Continue to payment <Icon name="arrow" size={18} />
           </Action>
-          {submitted && (
-            <p className="checkout-preview-note">
-              Payment processing isn't connected in this storefront preview.
-            </p>
-          )}
         </form>
         <aside className="checkout-summary">
           <Heading as="subsection">Your bag</Heading>
-          {items.length ? (
-            items.map((item) => (
-              <div className="checkout-summary-item" key={item.id}>
-                <Image width={900} height={900} src={`${basePath}${item.image}`} alt="" />
-                <div>
-                  <strong>{item.name}</strong>
-                  <span>
-                    {item.quantity} × ${item.price.toFixed(2)}
-                  </span>
-                </div>
-                <span>${(item.quantity * item.price).toFixed(2)}</span>
+          {items.length ? items.map((item) => (
+            <div className="checkout-summary-item" key={item.id}>
+              <Image width={900} height={900} src={item.image} alt="" />
+              <div>
+                <strong>{item.name}</strong>
+                <span>{item.quantity} × ${item.price.toFixed(2)}</span>
               </div>
-            ))
-          ) : (
-            <p>Your bag is empty.</p>
+              <span>${(item.quantity * item.price).toFixed(2)}</span>
+            </div>
+          )) : <p>Your bag is empty.</p>}
+          <div className="checkout-summary-total"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
+          <div className="checkout-summary-total checkout-shipping-total"><span>Shipping</span><strong>{getShippingCost(subtotal, shipping) === 0 ? "Free" : `$${getShippingCost(subtotal, shipping).toFixed(2)}`}</strong></div>
+          <p className="checkout-summary-note">Taxes calculated at checkout.</p>
+          {suggestions.length > 0 && (
+            <section className="checkout-suggestions">
+              <p className="kicker">A little something extra</p>
+              <Heading as="subsection">You might love</Heading>
+              {suggestions.map((product) => (
+                <article className="checkout-suggestion" key={product.id}>
+                  <Image src={product.image} width={900} height={900} alt="" />
+                  <div><strong>{product.name}</strong><span>${product.price.toFixed(2)}</span></div>
+                  <Action className="checkout-add-suggestion" onClick={() => onAddSuggestion(product)}>Add</Action>
+                </article>
+              ))}
+            </section>
           )}
-          <div className="checkout-summary-total">
-            <span>Subtotal</span>
-            <strong>${subtotal.toFixed(2)}</strong>
-          </div>
-          <p className="checkout-summary-note">
-            Taxes and shipping calculated at checkout.
-          </p>
         </aside>
       </div>
+    </main>
+  );
+}
+
+function PaymentPage({
+  items,
+  email,
+  shipping,
+  onNavigate,
+  onComplete,
+}: {
+  items: CartItem[];
+  email: string;
+  shipping: ShippingMethod;
+  onNavigate: (page: string) => void;
+  onComplete: () => void;
+}) {
+  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const shippingCost = getShippingCost(subtotal, shipping);
+  const shippingLabel = shipping === "expedited" ? "FedEx expedited" : "Standard shipping";
+  return (
+    <main className="checkout-page">
+      <CheckoutTopline onNavigate={onNavigate} />
+      <div className="checkout-layout payment-layout">
+        <form className="checkout-form" onSubmit={(event) => { event.preventDefault(); onComplete(); }}>
+          <p className="kicker">One last little step</p>
+          <Heading as="page" className="checkout-title">Payment</Heading>
+          <p className="payment-demo-note">This is a static storefront preview. No payment will be processed.</p>
+          <section>
+            <Heading as="subsection">Payment details</Heading>
+            <label className="payment-field-wide">Name on card<input name="card_name" autoComplete="cc-name" required placeholder="Full name" /></label>
+            <label className="payment-field-wide">Card number<input name="card_number" type="text" inputMode="numeric" autoComplete="cc-number" required placeholder="Any length is accepted in this preview" /></label>
+            <div className="checkout-fields payment-fields">
+              <label>Expiration date<input name="card_expiry" type="text" autoComplete="cc-exp" required placeholder="MM / YY" /></label>
+              <label>Security code<input name="card_cvc" type="text" inputMode="numeric" autoComplete="cc-csc" required placeholder="CVC" /></label>
+            </div>
+          </section>
+          <Action className="checkout-button checkout-continue" type="submit">Pay ${ (subtotal + shippingCost).toFixed(2) } <Icon name="arrow" size={18} /></Action>
+        </form>
+        <aside className="checkout-summary">
+          <Heading as="subsection">Order summary</Heading>
+          <p className="payment-summary-email">Confirmation sent to <strong>{email}</strong></p>
+          {items.map((item) => (
+            <div className="checkout-summary-item" key={item.id}>
+              <Image width={900} height={900} src={item.image} alt="" />
+              <div><strong>{item.name}</strong><span>{item.quantity} × ${item.price.toFixed(2)}</span></div>
+              <span>${(item.quantity * item.price).toFixed(2)}</span>
+            </div>
+          ))}
+          <div className="checkout-summary-total"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
+          <div className="checkout-summary-total checkout-shipping-total"><span>{shippingLabel}</span><strong>{shippingCost === 0 ? "Free" : `$${shippingCost.toFixed(2)}`}</strong></div>
+          <div className="checkout-summary-total payment-grand-total"><span>Total</span><strong>${(subtotal + shippingCost).toFixed(2)}</strong></div>
+          <p className="checkout-summary-note">Taxes calculated at checkout.</p>
+        </aside>
+      </div>
+    </main>
+  );
+}
+
+function CheckoutTopline({ onNavigate }: { onNavigate: (page: string) => void }) {
+  return (
+    <div className="checkout-topline">
+      <NavLink page="shop" onNavigate={onNavigate} className="checkout-back">← Continue shopping</NavLink>
+      <span className="checkout-wordmark">Daze & Dewy</span>
+      <span className="checkout-secure">Secure checkout</span>
+    </div>
+  );
+}
+
+function OrderConfirmationPage({ order, onNavigate }: { order: OrderDetails; onNavigate: (page: string) => void }) {
+  return (
+    <main className="confirmation-page">
+      <div className="checkout-topline">
+        <NavLink page="home" onNavigate={onNavigate} className="checkout-back">DAZE & DEWY</NavLink>
+        <span className="checkout-wordmark">Thank you</span>
+        <NavLink page="shop" onNavigate={onNavigate} className="checkout-secure">Keep exploring</NavLink>
+      </div>
+      <section className="confirmation-card">
+        <span className="confirmation-sparkle" aria-hidden="true">✿</span>
+        <p className="kicker">Your order is in</p>
+        <Heading as="page" className="checkout-title">A little joy is on its way.</Heading>
+        <p className="confirmation-order-number">Order #: <span>{order.orderNumber}</span></p>
+        <div className="confirmation-details">
+          <div><span>Estimated delivery</span><strong>{order.estimatedDelivery}</strong></div>
+          <div><span>Confirmation email</span><strong>{order.email}</strong></div>
+        </div>
+        <p>We’ll send you an email confirmation for this order. Once your order ships, we’ll send another message with a link to track your delivery.</p>
+        <div className="confirmation-actions">
+          <NavLink page="shop" onNavigate={onNavigate} className="primary-link">Back to the store <Icon name="arrow" size={18} /></NavLink>
+        </div>
+      </section>
     </main>
   );
 }
@@ -1971,6 +2107,9 @@ export default function App() {
   const [page, setPage] = useState("home");
   const [cartOpen, setCartOpen] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [checkoutEmail, setCheckoutEmail] = useState("");
+  const [checkoutShipping, setCheckoutShipping] = useState<ShippingMethod>("standard");
+  const [confirmedOrder, setConfirmedOrder] = useState<OrderDetails | null>(null);
 
   useEffect(() => {
     const onHash = () => setPage(window.location.hash.slice(1) || "home");
@@ -2013,6 +2152,32 @@ export default function App() {
     );
   }
 
+  function addCheckoutSuggestion(product: Product) {
+    setCart((current) => {
+      const found = current.find((item) => item.id === product.id);
+      return found
+        ? current.map((item) => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
+        : [...current, { ...product, quantity: 1 }];
+    });
+  }
+
+  function completeOrder() {
+    const deliveryDate = new Date();
+    let businessDays = checkoutShipping === "expedited" ? 3 : 7;
+    while (businessDays > 0) {
+      deliveryDate.setDate(deliveryDate.getDate() + 1);
+      if (deliveryDate.getDay() !== 0 && deliveryDate.getDay() !== 6) businessDays -= 1;
+    }
+    setConfirmedOrder({
+      email: checkoutEmail,
+      shipping: checkoutShipping,
+      orderNumber: `DD-${Date.now().toString().slice(-8)}`,
+      estimatedDelivery: deliveryDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
+    });
+    setCart([]);
+    navigate("confirmation");
+  }
+
   let content;
   if (page === "home") {
     content = <Home onNavigate={navigate} onAdd={addToCart} />;
@@ -2021,7 +2186,30 @@ export default function App() {
   } else if (page === "contact") {
     content = <ContactPage />;
   } else if (page === "checkout") {
-    content = <CheckoutPage items={cart} onNavigate={navigate} />;
+    content = (
+      <CheckoutPage
+        items={cart}
+        onNavigate={navigate}
+        onContinue={(email, shipping) => {
+          setCheckoutEmail(email);
+          setCheckoutShipping(shipping);
+          navigate("payment");
+        }}
+        onAddSuggestion={addCheckoutSuggestion}
+      />
+    );
+  } else if (page === "payment") {
+    content = (
+      <PaymentPage
+        items={cart}
+        email={checkoutEmail}
+        shipping={checkoutShipping}
+        onNavigate={navigate}
+        onComplete={completeOrder}
+      />
+    );
+  } else if (page === "confirmation" && confirmedOrder) {
+    content = <OrderConfirmationPage order={confirmedOrder} onNavigate={navigate} />;
   } else if (page === "blog") {
     content = <BlogPage onNavigate={navigate} />;
   } else if (page === "privacy" || page === "terms" || page === "shipping") {
