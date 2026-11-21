@@ -1,15 +1,14 @@
 "use client";
 import Image from "next/image";
-
 import { SubmitEvent, ReactNode, useEffect, useRef, useState } from "react";
-import aboutImg from '../public/about-image.jpg';
-import bodyProductImg from '../public/products/body.svg';
-import candleProductImg from '../public/products/candle.svg';
-import makeupProductImg from '../public/products/makeup.svg';
-import serumProductImg from '../public/products/serum.svg';
-import skincareProductImg from '../public/products/skincare.svg';
-import toolProductImg from '../public/products/tool.svg';
 
+import aboutImg from "../public/about-image.jpg";
+import bodyProductImg from "../public/products/body.svg";
+import candleProductImg from "../public/products/candle.svg";
+import makeupProductImg from "../public/products/makeup.svg";
+import serumProductImg from "../public/products/serum.svg";
+import skincareProductImg from "../public/products/skincare.svg";
+import toolProductImg from "../public/products/tool.svg";
 
 type Product = {
   id: number;
@@ -22,7 +21,6 @@ type Product = {
 };
 
 type CartItem = Product & { quantity: number };
-
 
 const products: Product[] = [
   {
@@ -198,7 +196,6 @@ const products: Product[] = [
   },
 ];
 
-
 const categories = ["New", "Skincare", "Makeup", "Bath & Body", "Candles"];
 
 function Icon({
@@ -355,7 +352,7 @@ function Header({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [focusedIndex] = useState(-1);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchMatches = searchText.trim()
     ? products
@@ -654,7 +651,12 @@ function ProductPage({
           aria-label={`${product.name} product images`}
         >
           <div className="product-gallery-main">
-            <Image width={900} height={900} src={product.image} alt={product.name} />
+            <Image
+              width={900}
+              height={900}
+              src={product.image}
+              alt={product.name}
+            />
             {product.badge && (
               <span className={`product-badge ${product.badge.toLowerCase()}`}>
                 {product.badge}
@@ -662,7 +664,12 @@ function ProductPage({
             )}
           </div>
           <div className="product-gallery-detail">
-            <Image width={900} height={900} src={product.image} alt={`${product.name}, close-up`} />
+            <Image
+              width={900}
+              height={900}
+              src={product.image}
+              alt={`${product.name}, close-up`}
+            />
           </div>
           <div className="product-gallery-note">
             <span className="flower-mark" aria-hidden="true">
@@ -812,6 +819,130 @@ function Home({
     return () => observer.disconnect();
   }, [storyVisible]);
 
+  function FlowerIcon({ size = 24 }: { size?: number }) {
+    return (
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M12 18.5C8.8 15.3 4.2 11.7 4.2 7.7c0-3.4 4.3-4.4 7.8 3.3" />
+        <path d="M12 18.5c3.2-3.2 7.8-6.8 7.8-10.8 0-3.4-4.3-4.4-7.8 3.3" />
+        <path d="M12 11c-3.2-5.8-1.9-7.5 0-7.5s3.2 1.7 0 7.5Z" />
+        <path d="M12 18.5c-2-3.7-3.7-7.3-3.7-11.4M12 18.5c2-3.7 3.7-7.3 3.7-11.4" />
+      </svg>
+    );
+  }
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isVercelEnv, setIsVercelEnv] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    // 1. Check if running on Vercel deployment
+    const isVercel =
+      process.env.NEXT_PUBLIC_VERCEL_ENV === "production" ||
+      process.env.NEXT_PUBLIC_VERCEL_ENV === "preview";
+
+    setIsVercelEnv(isVercel);
+
+    // 2. If NOT Vercel, bypass security gate entirely
+    if (!isVercel) {
+      setIsAuthenticated(true);
+      return;
+    }
+
+    // 3. If Vercel, verify if token key exists in active session
+    if (sessionStorage.getItem("site_unlocked") === "true") {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handlePasswordSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // Change 'MySecret123' to your preferred password
+    if (passwordInput === "MySecret123") {
+      sessionStorage.setItem("site_unlocked", "true");
+      setIsAuthenticated(true);
+      setErrorMessage("");
+    } else {
+      setErrorMessage("Incorrect password. Please try again.");
+      setPasswordInput("");
+    }
+  }
+
+  // If on Vercel and not logged in, render the Password Form
+  if (isVercelEnv && !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4 font-sans text-stone-800">
+        <div className="w-full max-w-md bg-white border border-stone-200 rounded-2xl p-8 shadow-sm text-center">
+          <div className="flex justify-center text-stone-700 mb-4">
+            <FlowerIcon size={40} />
+          </div>
+
+          <h1 className="text-2xl font-serif tracking-wide mb-2">
+            Shopify Beauty
+          </h1>
+          <p className="text-sm text-stone-500 mb-6">
+            This preview project is private. Enter the security password to view
+            the storefront content.
+          </p>
+
+          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="preview-password" className="sr-only">
+                Password
+              </label>
+              <input
+                id="preview-password"
+                type="password"
+                placeholder="Enter password"
+                value={passwordInput}
+                onChange={(e) => {
+                  setPasswordInput(e.target.value);
+                  setErrorMessage("");
+                }}
+                aria-describedby={
+                  errorMessage ? "preview-password-error" : undefined
+                }
+                aria-invalid={errorMessage ? true : undefined}
+                className="w-full px-4 py-3 border border-stone-300 rounded-lg text-sm bg-stone-50 placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-stone-600 focus:border-stone-600 transition-all text-center"
+              />
+            </div>
+
+            {errorMessage && (
+              <p
+                id="preview-password-error"
+                role="alert"
+                className="text-xs text-rose-600 font-medium"
+              >
+                {errorMessage}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              className="w-full bg-stone-900 text-white py-3 rounded-lg text-sm font-medium hover:bg-stone-800 active:bg-stone-950 transition-colors tracking-wide"
+            >
+              Access Storefront
+            </button>
+          </form>
+
+          <div className="mt-8 pt-4 border-t border-stone-100 text-[10px] text-stone-400 tracking-wider uppercase">
+            Protected Preview Environment
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <main>
       <section className="hero">
@@ -1523,7 +1654,12 @@ function ContactPage() {
         <form className="contact-form" onSubmit={submit}>
           <label>
             <span>Name</span>
-            <input required name="name" placeholder="Your name" autoComplete="name"/>
+            <input
+              required
+              name="name"
+              placeholder="Your name"
+              autoComplete="name"
+            />
           </label>
           <label>
             <span>Email</span>
@@ -1559,7 +1695,6 @@ function ContactPage() {
           <Action type="submit" className="form-submit">
             {sent ? "Message sent — thank you" : "Send your note"}
             {sent ? null : <Icon name="arrow" size={18} />}
-            
           </Action>
         </form>
       </section>
@@ -1623,9 +1758,15 @@ function Footer({ onNavigate }: { onNavigate: (page: string) => void }) {
           </div>
           <div>
             <span>FOLLOW</span>
-            <a href="https://www.instagram.com/" target="_blank">Instagram</a>
-            <a href="https://www.pinterest.com/" target="_blank">Pinterest</a>
-            <a href="https://www.tiktok.com/" target="_blank">TikTok</a>
+            <a href="https://www.instagram.com/" target="_blank">
+              Instagram
+            </a>
+            <a href="https://www.pinterest.com/" target="_blank">
+              Pinterest
+            </a>
+            <a href="https://www.tiktok.com/" target="_blank">
+              TikTok
+            </a>
           </div>
         </div>
       </div>
@@ -1806,7 +1947,12 @@ function CartDrawer({
             <div className="cart-items">
               {items.map((item) => (
                 <article className="cart-item" key={item.id}>
-                  <Image width={900} height={900} src={item.image} alt={item.name} />
+                  <Image
+                    width={900}
+                    height={900}
+                    src={item.image}
+                    alt={item.name}
+                  />
                   <div>
                     <p className="eyebrow">{item.brand}</p>
                     <Heading as="subsection">{item.name}</Heading>
@@ -1925,28 +2071,55 @@ function CheckoutPage({
             <div className="checkout-fields">
               <label>
                 First name
-                <input name="delivery_name" autoComplete="given-name" required />
+                <input
+                  name="delivery_name"
+                  autoComplete="given-name"
+                  required
+                />
               </label>
               <label>
                 Last name
-                <input name="delivery_last_name" autoComplete="family-name" required />
+                <input
+                  name="delivery_last_name"
+                  autoComplete="family-name"
+                  required
+                />
               </label>
               <label className="checkout-field-wide">
                 Address
-                <input name="delivery_address" autoComplete="street-address" required />
+                <input
+                  name="delivery_address"
+                  autoComplete="street-address"
+                  required
+                />
               </label>
               <label>
                 City
-                <input name="delivery_address_2" autoComplete="address-level2" required />
+                <input
+                  name="delivery_address_2"
+                  autoComplete="address-level2"
+                  required
+                />
               </label>
               <label>
                 Postal code
-                <input name="delivery_postal_code" autoComplete="postal-code" required />
+                <input
+                  name="delivery_postal_code"
+                  autoComplete="postal-code"
+                  required
+                />
               </label>
               <label className="checkout-field-wide">
                 Country or region
-                <select name="delivery_country" autoComplete="country-name" defaultValue="" required>
-                  <option value="" disabled>Select country or region</option>
+                <select
+                  name="delivery_country"
+                  autoComplete="country-name"
+                  defaultValue=""
+                  required
+                >
+                  <option value="" disabled>
+                    Select country or region
+                  </option>
                   <option>United States</option>
                   <option>Canada</option>
                   <option>Mexico</option>
@@ -1965,7 +2138,10 @@ function CheckoutPage({
                   checked={shipping === "standard"}
                   onChange={() => setShipping("standard")}
                 />
-                <span><strong>Standard shipping</strong><small>5–7 business days · USPS</small></span>
+                <span>
+                  <strong>Standard shipping</strong>
+                  <small>5–7 business days · USPS</small>
+                </span>
                 <b>{subtotal >= 75 ? "Free" : "$6.00"}</b>
               </label>
               <label className="shipping-option">
@@ -1976,11 +2152,16 @@ function CheckoutPage({
                   checked={shipping === "expedited"}
                   onChange={() => setShipping("expedited")}
                 />
-                <span><strong>Expedited shipping</strong><small>2–3 business days · FedEx</small></span>
+                <span>
+                  <strong>Expedited shipping</strong>
+                  <small>2–3 business days · FedEx</small>
+                </span>
                 <b>$18.00</b>
               </label>
             </div>
-            <p className="shipping-free-note">Standard shipping is on us when your order is $75 or more.</p>
+            <p className="shipping-free-note">
+              Standard shipping is on us when your order is $75 or more.
+            </p>
           </section>
           <Action className="checkout-button checkout-continue" type="submit">
             Continue to payment <Icon name="arrow" size={18} />
@@ -1988,18 +2169,34 @@ function CheckoutPage({
         </form>
         <aside className="checkout-summary">
           <Heading as="subsection">Your bag</Heading>
-          {items.length ? items.map((item) => (
-            <div className="checkout-summary-item" key={item.id}>
-              <Image width={900} height={900} src={item.image} alt="" />
-              <div>
-                <strong>{item.name}</strong>
-                <span>{item.quantity} × ${item.price.toFixed(2)}</span>
+          {items.length ? (
+            items.map((item) => (
+              <div className="checkout-summary-item" key={item.id}>
+                <Image width={900} height={900} src={item.image} alt="" />
+                <div>
+                  <strong>{item.name}</strong>
+                  <span>
+                    {item.quantity} × ${item.price.toFixed(2)}
+                  </span>
+                </div>
+                <span>${(item.quantity * item.price).toFixed(2)}</span>
               </div>
-              <span>${(item.quantity * item.price).toFixed(2)}</span>
-            </div>
-          )) : <p>Your bag is empty.</p>}
-          <div className="checkout-summary-total"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
-          <div className="checkout-summary-total checkout-shipping-total"><span>Shipping</span><strong>{getShippingCost(subtotal, shipping) === 0 ? "Free" : `$${getShippingCost(subtotal, shipping).toFixed(2)}`}</strong></div>
+            ))
+          ) : (
+            <p>Your bag is empty.</p>
+          )}
+          <div className="checkout-summary-total">
+            <span>Subtotal</span>
+            <strong>${subtotal.toFixed(2)}</strong>
+          </div>
+          <div className="checkout-summary-total checkout-shipping-total">
+            <span>Shipping</span>
+            <strong>
+              {getShippingCost(subtotal, shipping) === 0
+                ? "Free"
+                : `$${getShippingCost(subtotal, shipping).toFixed(2)}`}
+            </strong>
+          </div>
           <p className="checkout-summary-note">Taxes calculated at checkout.</p>
           {suggestions.length > 0 && (
             <section className="checkout-suggestions">
@@ -2008,8 +2205,16 @@ function CheckoutPage({
               {suggestions.map((product) => (
                 <article className="checkout-suggestion" key={product.id}>
                   <Image src={product.image} width={900} height={900} alt="" />
-                  <div><strong>{product.name}</strong><span>${product.price.toFixed(2)}</span></div>
-                  <Action className="checkout-add-suggestion" onClick={() => onAddSuggestion(product)}>Add</Action>
+                  <div>
+                    <strong>{product.name}</strong>
+                    <span>${product.price.toFixed(2)}</span>
+                  </div>
+                  <Action
+                    className="checkout-add-suggestion"
+                    onClick={() => onAddSuggestion(product)}
+                  >
+                    Add
+                  </Action>
                 </article>
               ))}
             </section>
@@ -2033,41 +2238,113 @@ function PaymentPage({
   onNavigate: (page: string) => void;
   onComplete: () => void;
 }) {
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
   const shippingCost = getShippingCost(subtotal, shipping);
-  const shippingLabel = shipping === "expedited" ? "FedEx expedited" : "Standard shipping";
+  const shippingLabel =
+    shipping === "expedited" ? "FedEx expedited" : "Standard shipping";
   return (
     <main className="checkout-page">
       <CheckoutTopline onNavigate={onNavigate} />
       <div className="checkout-layout payment-layout">
-        <form className="checkout-form" onSubmit={(event) => { event.preventDefault(); onComplete(); }}>
+        <form
+          className="checkout-form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onComplete();
+          }}
+        >
           <p className="kicker">One last little step</p>
-          <Heading as="page" className="checkout-title">Payment</Heading>
-          <p className="payment-demo-note">This is a static storefront preview. No payment will be processed.</p>
+          <Heading as="page" className="checkout-title">
+            Payment
+          </Heading>
+          <p className="payment-demo-note">
+            This is a static storefront preview. No payment will be processed.
+          </p>
           <section>
             <Heading as="subsection">Payment details</Heading>
-            <label className="payment-field-wide">Name on card<input name="card_name" autoComplete="cc-name" required placeholder="Full name" /></label>
-            <label className="payment-field-wide">Card number<input name="card_number" type="text" inputMode="numeric" autoComplete="cc-number" required placeholder="Any length is accepted in this preview" /></label>
+            <label className="payment-field-wide">
+              Name on card
+              <input
+                name="card_name"
+                autoComplete="cc-name"
+                required
+                placeholder="Full name"
+              />
+            </label>
+            <label className="payment-field-wide">
+              Card number
+              <input
+                name="card_number"
+                type="text"
+                inputMode="numeric"
+                autoComplete="cc-number"
+                required
+                placeholder="Any length is accepted in this preview"
+              />
+            </label>
             <div className="checkout-fields payment-fields">
-              <label>Expiration date<input name="card_expiry" type="text" autoComplete="cc-exp" required placeholder="MM / YY" /></label>
-              <label>Security code<input name="card_cvc" type="text" inputMode="numeric" autoComplete="cc-csc" required placeholder="CVC" /></label>
+              <label>
+                Expiration date
+                <input
+                  name="card_expiry"
+                  type="text"
+                  autoComplete="cc-exp"
+                  required
+                  placeholder="MM / YY"
+                />
+              </label>
+              <label>
+                Security code
+                <input
+                  name="card_cvc"
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="cc-csc"
+                  required
+                  placeholder="CVC"
+                />
+              </label>
             </div>
           </section>
-          <Action className="checkout-button checkout-continue" type="submit">Pay ${ (subtotal + shippingCost).toFixed(2) } <Icon name="arrow" size={18} /></Action>
+          <Action className="checkout-button checkout-continue" type="submit">
+            Pay ${(subtotal + shippingCost).toFixed(2)}{" "}
+            <Icon name="arrow" size={18} />
+          </Action>
         </form>
         <aside className="checkout-summary">
           <Heading as="subsection">Order summary</Heading>
-          <p className="payment-summary-email">Confirmation sent to <strong>{email}</strong></p>
+          <p className="payment-summary-email">
+            Confirmation sent to <strong>{email}</strong>
+          </p>
           {items.map((item) => (
             <div className="checkout-summary-item" key={item.id}>
               <Image width={900} height={900} src={item.image} alt="" />
-              <div><strong>{item.name}</strong><span>{item.quantity} × ${item.price.toFixed(2)}</span></div>
+              <div>
+                <strong>{item.name}</strong>
+                <span>
+                  {item.quantity} × ${item.price.toFixed(2)}
+                </span>
+              </div>
               <span>${(item.quantity * item.price).toFixed(2)}</span>
             </div>
           ))}
-          <div className="checkout-summary-total"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
-          <div className="checkout-summary-total checkout-shipping-total"><span>{shippingLabel}</span><strong>{shippingCost === 0 ? "Free" : `$${shippingCost.toFixed(2)}`}</strong></div>
-          <div className="checkout-summary-total payment-grand-total"><span>Total</span><strong>${(subtotal + shippingCost).toFixed(2)}</strong></div>
+          <div className="checkout-summary-total">
+            <span>Subtotal</span>
+            <strong>${subtotal.toFixed(2)}</strong>
+          </div>
+          <div className="checkout-summary-total checkout-shipping-total">
+            <span>{shippingLabel}</span>
+            <strong>
+              {shippingCost === 0 ? "Free" : `$${shippingCost.toFixed(2)}`}
+            </strong>
+          </div>
+          <div className="checkout-summary-total payment-grand-total">
+            <span>Total</span>
+            <strong>${(subtotal + shippingCost).toFixed(2)}</strong>
+          </div>
           <p className="checkout-summary-note">Taxes calculated at checkout.</p>
         </aside>
       </div>
@@ -2075,36 +2352,73 @@ function PaymentPage({
   );
 }
 
-function CheckoutTopline({ onNavigate }: { onNavigate: (page: string) => void }) {
+function CheckoutTopline({
+  onNavigate,
+}: {
+  onNavigate: (page: string) => void;
+}) {
   return (
     <div className="checkout-topline">
-      <NavLink page="shop" onNavigate={onNavigate} className="checkout-back">← Continue shopping</NavLink>
+      <NavLink page="shop" onNavigate={onNavigate} className="checkout-back">
+        ← Continue shopping
+      </NavLink>
       <span className="checkout-wordmark">Daze & Dewy</span>
       <span className="checkout-secure">Secure checkout</span>
     </div>
   );
 }
 
-function OrderConfirmationPage({ order, onNavigate }: { order: OrderDetails; onNavigate: (page: string) => void }) {
+function OrderConfirmationPage({
+  order,
+  onNavigate,
+}: {
+  order: OrderDetails;
+  onNavigate: (page: string) => void;
+}) {
   return (
     <main className="confirmation-page">
       <div className="checkout-topline">
-        <NavLink page="home" onNavigate={onNavigate} className="checkout-back">DAZE & DEWY</NavLink>
+        <NavLink page="home" onNavigate={onNavigate} className="checkout-back">
+          DAZE & DEWY
+        </NavLink>
         <span className="checkout-wordmark">Thank you</span>
-        <NavLink page="shop" onNavigate={onNavigate} className="checkout-secure">Keep exploring</NavLink>
+        <NavLink
+          page="shop"
+          onNavigate={onNavigate}
+          className="checkout-secure"
+        >
+          Keep exploring
+        </NavLink>
       </div>
       <section className="confirmation-card">
-        <span className="confirmation-sparkle" aria-hidden="true">✿</span>
+        <span className="confirmation-sparkle" aria-hidden="true">
+          ✿
+        </span>
         <p className="kicker">Your order is in</p>
-        <Heading as="page" className="checkout-title">A little joy is on its way.</Heading>
-        <p className="confirmation-order-number">Order #: <span>{order.orderNumber}</span></p>
+        <Heading as="page" className="checkout-title">
+          A little joy is on its way.
+        </Heading>
+        <p className="confirmation-order-number">
+          Order #: <span>{order.orderNumber}</span>
+        </p>
         <div className="confirmation-details">
-          <div><span>Estimated delivery</span><strong>{order.estimatedDelivery}</strong></div>
-          <div><span>Confirmation email</span><strong>{order.email}</strong></div>
+          <div>
+            <span>Estimated delivery</span>
+            <strong>{order.estimatedDelivery}</strong>
+          </div>
+          <div>
+            <span>Confirmation email</span>
+            <strong>{order.email}</strong>
+          </div>
         </div>
-        <p>We’ll send you an email confirmation for this order. Once your order ships, we’ll send another message with a link to track your delivery.</p>
+        <p>
+          We’ll send you an email confirmation for this order. Once your order
+          ships, we’ll send another message with a link to track your delivery.
+        </p>
         <div className="confirmation-actions">
-          <NavLink page="shop" onNavigate={onNavigate} className="primary-link">Back to the store <Icon name="arrow" size={18} /></NavLink>
+          <NavLink page="shop" onNavigate={onNavigate} className="primary-link">
+            Back to the store <Icon name="arrow" size={18} />
+          </NavLink>
         </div>
       </section>
     </main>
@@ -2116,8 +2430,11 @@ export default function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [checkoutEmail, setCheckoutEmail] = useState("");
-  const [checkoutShipping, setCheckoutShipping] = useState<ShippingMethod>("standard");
-  const [confirmedOrder, setConfirmedOrder] = useState<OrderDetails | null>(null);
+  const [checkoutShipping, setCheckoutShipping] =
+    useState<ShippingMethod>("standard");
+  const [confirmedOrder, setConfirmedOrder] = useState<OrderDetails | null>(
+    null,
+  );
 
   useEffect(() => {
     const onHash = () => setPage(window.location.hash.slice(1) || "home");
@@ -2164,7 +2481,11 @@ export default function App() {
     setCart((current) => {
       const found = current.find((item) => item.id === product.id);
       return found
-        ? current.map((item) => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
+        ? current.map((item) =>
+            item.id === product.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item,
+          )
         : [...current, { ...product, quantity: 1 }];
     });
   }
@@ -2174,13 +2495,18 @@ export default function App() {
     let businessDays = checkoutShipping === "expedited" ? 3 : 7;
     while (businessDays > 0) {
       deliveryDate.setDate(deliveryDate.getDate() + 1);
-      if (deliveryDate.getDay() !== 0 && deliveryDate.getDay() !== 6) businessDays -= 1;
+      if (deliveryDate.getDay() !== 0 && deliveryDate.getDay() !== 6)
+        businessDays -= 1;
     }
     setConfirmedOrder({
       email: checkoutEmail,
       shipping: checkoutShipping,
       orderNumber: `DD-${Date.now().toString().slice(-8)}`,
-      estimatedDelivery: deliveryDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
+      estimatedDelivery: deliveryDate.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      }),
     });
     setCart([]);
     navigate("confirmation");
@@ -2217,7 +2543,9 @@ export default function App() {
       />
     );
   } else if (page === "confirmation" && confirmedOrder) {
-    content = <OrderConfirmationPage order={confirmedOrder} onNavigate={navigate} />;
+    content = (
+      <OrderConfirmationPage order={confirmedOrder} onNavigate={navigate} />
+    );
   } else if (page === "blog") {
     content = <BlogPage onNavigate={navigate} />;
   } else if (page === "privacy" || page === "terms" || page === "shipping") {
