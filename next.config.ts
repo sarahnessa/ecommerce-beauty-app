@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 // Check if explicitly building for GitHub Pages
 const isGitHubPages = process.env.IS_GITHUB_PAGES === 'true';

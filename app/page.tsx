@@ -1,14 +1,14 @@
-"use client";
-import Image from "next/image";
-import { SubmitEvent, ReactNode, useEffect, useRef, useState } from "react";
+'use client';
+import Image from 'next/image';
+import { SubmitEvent, ReactNode, useEffect, useRef, useState } from 'react';
 
-import aboutImg from "../public/about-image.jpg";
-import bodyProductImg from "../public/products/body.svg";
-import candleProductImg from "../public/products/candle.svg";
-import makeupProductImg from "../public/products/makeup.svg";
-import serumProductImg from "../public/products/serum.svg";
-import skincareProductImg from "../public/products/skincare.svg";
-import toolProductImg from "../public/products/tool.svg";
+import aboutImg from '../public/about-image.jpg';
+import bodyProductImg from '../public/products/body.svg';
+import candleProductImg from '../public/products/candle.svg';
+import makeupProductImg from '../public/products/makeup.svg';
+import serumProductImg from '../public/products/serum.svg';
+import skincareProductImg from '../public/products/skincare.svg';
+import toolProductImg from '../public/products/tool.svg';
 
 type Product = {
   id: number;
@@ -25,192 +25,185 @@ type CartItem = Product & { quantity: number };
 const products: Product[] = [
   {
     id: 1,
-    name: "Daily Cloud Cream",
-    brand: "Daze & Dewy",
-    category: "Skincare",
+    name: 'Daily Cloud Cream',
+    brand: 'Daze & Dewy',
+    category: 'Skincare',
     price: 42,
-    badge: "New",
+    badge: 'New',
     image: skincareProductImg,
   },
   {
     id: 2,
-    name: "Soft Tint Lip Colour",
-    brand: "Studio Form",
-    category: "Makeup",
+    name: 'Soft Tint Lip Colour',
+    brand: 'Studio Form',
+    category: 'Makeup',
     price: 28,
-    badge: "Bestseller",
+    badge: 'Bestseller',
     image: makeupProductImg,
   },
   {
     id: 3,
-    name: "Dew Drop Serum",
-    brand: "Daze & Dewy",
-    category: "Skincare",
+    name: 'Dew Drop Serum',
+    brand: 'Daze & Dewy',
+    category: 'Skincare',
     price: 58,
     image: serumProductImg,
   },
   {
     id: 4,
-    name: "Bonbon Bath Ritual Set",
-    brand: "Bonbon Bloom",
-    category: "Bath & Body",
+    name: 'Bonbon Bath Ritual Set',
+    brand: 'Bonbon Bloom',
+    category: 'Bath & Body',
     price: 64,
-    badge: "Exclusive",
+    badge: 'Exclusive',
     image: bodyProductImg,
   },
   {
     id: 5,
-    name: "Quiet Evening Candle",
-    brand: "Soft Ritual",
-    category: "Candles",
+    name: 'Quiet Evening Candle',
+    brand: 'Soft Ritual',
+    category: 'Candles',
     price: 46,
-    badge: "New",
+    badge: 'New',
     image: candleProductImg,
   },
   {
     id: 6,
-    name: "Comfort Skin Balm",
-    brand: "Daze & Dewy",
-    category: "Skincare",
+    name: 'Comfort Skin Balm',
+    brand: 'Daze & Dewy',
+    category: 'Skincare',
     price: 39,
-    badge: "New",
+    badge: 'New',
     image: skincareProductImg,
   },
   {
     id: 7,
-    name: "Daydream Colour Palette",
-    brand: "Studio Form",
-    category: "Makeup",
+    name: 'Daydream Colour Palette',
+    brand: 'Studio Form',
+    category: 'Makeup',
     price: 36,
     image: makeupProductImg,
   },
   {
     id: 8,
-    name: "Smooth Stone Tool",
-    brand: "Daze & Dewy",
-    category: "Tools",
+    name: 'Smooth Stone Tool',
+    brand: 'Daze & Dewy',
+    category: 'Tools',
     price: 32,
     image: toolProductImg,
   },
   {
     id: 9,
-    name: "Vanilla Taffy Body Wash",
-    brand: "Bonbon Bloom",
-    category: "Bath & Body",
+    name: 'Vanilla Taffy Body Wash',
+    brand: 'Bonbon Bloom',
+    category: 'Bath & Body',
     price: 36,
-    badge: "Bestseller",
+    badge: 'Bestseller',
     image: bodyProductImg,
   },
   {
     id: 10,
-    name: "Daily Soft Body Lotion",
-    brand: "Soft Ritual",
-    category: "Bath & Body",
+    name: 'Daily Soft Body Lotion',
+    brand: 'Soft Ritual',
+    category: 'Bath & Body',
     price: 38,
     image: bodyProductImg,
   },
   {
     id: 11,
-    name: "Everyday Deodorant",
-    brand: "Soft Ritual",
-    category: "Bath & Body",
+    name: 'Everyday Deodorant',
+    brand: 'Soft Ritual',
+    category: 'Bath & Body',
     price: 24,
-    badge: "New",
+    badge: 'New',
     image: bodyProductImg,
   },
   {
     id: 12,
-    name: "Soft Cloud Body Mist",
-    brand: "Soft Ritual",
-    category: "Bath & Body",
+    name: 'Soft Cloud Body Mist',
+    brand: 'Soft Ritual',
+    category: 'Bath & Body',
     price: 42,
     image: bodyProductImg,
   },
   {
     id: 13,
-    name: "Marshmallow Melt Hand Cream",
-    brand: "Bonbon Bloom",
-    category: "Skincare",
+    name: 'Marshmallow Melt Hand Cream',
+    brand: 'Bonbon Bloom',
+    category: 'Skincare',
     price: 22,
     image: skincareProductImg,
   },
   {
     id: 14,
-    name: "Polishing Body Scrub",
-    brand: "Daze & Dewy",
-    category: "Bath & Body",
+    name: 'Polishing Body Scrub',
+    brand: 'Daze & Dewy',
+    category: 'Bath & Body',
     price: 32,
-    badge: "Exclusive",
+    badge: 'Exclusive',
     image: bodyProductImg,
   },
   {
     id: 15,
-    name: "Rich Day Cream",
-    brand: "Daze & Dewy",
-    category: "Skincare",
+    name: 'Rich Day Cream',
+    brand: 'Daze & Dewy',
+    category: 'Skincare',
     price: 28,
-    badge: "Bestseller",
+    badge: 'Bestseller',
     image: skincareProductImg,
   },
   {
     id: 16,
-    name: "Gentle Cleansing Bar",
-    brand: "Soft Ritual",
-    category: "Bath & Body",
+    name: 'Gentle Cleansing Bar',
+    brand: 'Soft Ritual',
+    category: 'Bath & Body',
     price: 18,
     image: bodyProductImg,
   },
   {
     id: 17,
-    name: "Glow Body Oil",
-    brand: "Daze & Dewy",
-    category: "Bath & Body",
+    name: 'Glow Body Oil',
+    brand: 'Daze & Dewy',
+    category: 'Bath & Body',
     price: 38,
-    badge: "New",
+    badge: 'New',
     image: serumProductImg,
   },
   {
     id: 18,
-    name: "Gentle Body Cleanser",
-    brand: "Soft Ritual",
-    category: "Bath & Body",
+    name: 'Gentle Body Cleanser',
+    brand: 'Soft Ritual',
+    category: 'Bath & Body',
     price: 26,
     image: bodyProductImg,
   },
   {
     id: 19,
-    name: "Sunbeam Candle",
-    brand: "Wick & Wonder",
-    category: "Candles",
+    name: 'Sunbeam Candle',
+    brand: 'Wick & Wonder',
+    category: 'Candles',
     price: 34,
     image: candleProductImg,
   },
   {
     id: 20,
-    name: "Evening Candle Set",
-    brand: "Wick & Wonder",
-    category: "Candles",
+    name: 'Evening Candle Set',
+    brand: 'Wick & Wonder',
+    category: 'Candles',
     price: 58,
-    badge: "Exclusive",
+    badge: 'Exclusive',
     image: candleProductImg,
   },
 ];
 
-const categories = ["New", "Skincare", "Makeup", "Bath & Body", "Candles"];
+const categories = ['New', 'Skincare', 'Makeup', 'Bath & Body', 'Candles'];
 
 function Icon({
   name,
   size = 20,
 }: {
   name:
-    | "bag"
-    | "arrow"
-    | "menu"
-    | "close"
-    | "plus"
-    | "minus"
-    | "search"
-    | "flower";
+    'bag' | 'arrow' | 'menu' | 'close' | 'plus' | 'minus' | 'search' | 'flower';
   size?: number;
 }) {
   const paths: Record<string, ReactNode> = {
@@ -271,17 +264,38 @@ function Icon({
   );
 }
 
+function FlowerIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 18.5C8.8 15.3 4.2 11.7 4.2 7.7c0-3.4 4.3-4.4 7.8 3.3" />
+      <path d="M12 18.5c3.2-3.2 7.8-6.8 7.8-10.8 0-3.4-4.3-4.4-7.8 3.3" />
+      <path d="M12 11c-3.2-5.8-1.9-7.5 0-7.5s3.2 1.7 0 7.5Z" />
+      <path d="M12 18.5c-2-3.7-3.7-7.3-3.7-11.4M12 18.5c2-3.7 3.7-7.3 3.7-11.4" />
+    </svg>
+  );
+}
+
 function Action({
   children,
-  className = "",
+  className = '',
   onClick,
-  type = "button",
+  type = 'button',
   ariaLabel,
 }: {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
-  type?: "button" | "submit";
+  type?: 'button' | 'submit';
   ariaLabel?: string;
 }) {
   return (
@@ -300,7 +314,7 @@ function NavLink({
   children,
   page,
   onNavigate,
-  className = "",
+  className = '',
 }: {
   children: ReactNode;
   page: string;
@@ -322,15 +336,15 @@ function NavLink({
 }
 
 function Heading({
-  as = "section",
+  as = 'section',
   children,
-  className = "",
+  className = '',
 }: {
-  as?: "page" | "section" | "subsection";
+  as?: 'page' | 'section' | 'subsection';
   children: ReactNode;
   className?: string;
 }) {
-  const level = as === "page" ? 1 : as === "section" ? 2 : 3;
+  const level = as === 'page' ? 1 : as === 'section' ? 2 : 3;
   return (
     <div role="heading" aria-level={level} className={className}>
       {children}
@@ -351,7 +365,7 @@ function Header({
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
   const [focusedIndex] = useState(-1);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchMatches = searchText.trim()
@@ -359,7 +373,7 @@ function Header({
         .filter((product) =>
           `${product.name} ${product.brand} ${product.category}`
             .toLowerCase()
-            .includes(searchText.trim().toLowerCase()),
+            .includes(searchText.trim().toLowerCase())
         )
         .slice(0, 4)
     : [];
@@ -377,7 +391,7 @@ function Header({
     }
     onSearch(query);
     setSearchOpen(false);
-    setSearchText("");
+    setSearchText('');
   }
 
   return (
@@ -411,13 +425,13 @@ function Header({
           <NavLink page="contact" onNavigate={onNavigate}>
             Visit
           </NavLink>
-          <div className={`search-control${searchOpen ? " is-open" : ""}`}>
+          <div className={`search-control${searchOpen ? ' is-open' : ''}`}>
             <Action
               className="search-button"
               onClick={() => setSearchOpen((open) => !open)}
-              ariaLabel={searchOpen ? "Close search" : "Search"}
+              ariaLabel={searchOpen ? 'Close search' : 'Search'}
             >
-              <Icon name={searchOpen ? "close" : "search"} size={18} />
+              <Icon name={searchOpen ? 'close' : 'search'} size={18} />
             </Action>
             <form className="header-search-form" onSubmit={submitSearch}>
               <input
@@ -429,9 +443,9 @@ function Header({
                 value={searchText}
                 onChange={(event) => setSearchText(event.target.value)}
                 onKeyDown={(event) => {
-                  if (event.key === "Escape") {
+                  if (event.key === 'Escape') {
                     setSearchOpen(false);
-                    setSearchText("");
+                    setSearchText('');
                   }
                 }}
                 tabIndex={searchOpen ? 0 : -1}
@@ -448,12 +462,12 @@ function Header({
                     <button
                       key={product.id}
                       type="button"
-                      aria-selected={focusedIndex === index ? "true" : "false"}
+                      aria-selected={focusedIndex === index ? 'true' : 'false'}
                       role="option"
                       onClick={() => {
                         onSearch(product.name);
                         setSearchOpen(false);
-                        setSearchText("");
+                        setSearchText('');
                       }}
                     >
                       <span>{product.name}</span>
@@ -506,7 +520,7 @@ function Header({
               <span>Bag ({cartCount})</span>
             </Action>
           </div>
-          {["home", "shop", "new", "about", "contact"].map((item) => (
+          {['home', 'shop', 'new', 'about', 'contact'].map((item) => (
             <NavLink
               key={item}
               page={item}
@@ -515,8 +529,8 @@ function Header({
                 setMobileOpen(false);
               }}
             >
-              {item === "contact"
-                ? "Visit & contact"
+              {item === 'contact'
+                ? 'Visit & contact'
                 : item.charAt(0).toUpperCase() + item.slice(1)}
             </NavLink>
           ))}
@@ -621,15 +635,15 @@ function ProductPage({
   const related = products.filter((item) => item.id !== product.id).slice(0, 4);
   const categoryCopy: Record<string, string> = {
     Skincare:
-      "A considered daily essential made to bring a little more comfort and care to your routine. Easy to reach for, lovely to use, and designed for real life.",
+      'A considered daily essential made to bring a little more comfort and care to your routine. Easy to reach for, lovely to use, and designed for real life.',
     Makeup:
-      "Playful color with a soft, wearable feel. Make it your own, keep it close, and bring a little extra joy to the everyday.",
-    "Bath & Body":
-      "A feel-good staple for everyday rituals, with a comforting texture and an easy, feel-good finish from head to toe.",
+      'Playful color with a soft, wearable feel. Make it your own, keep it close, and bring a little extra joy to the everyday.',
+    'Bath & Body':
+      'A feel-good staple for everyday rituals, with a comforting texture and an easy, feel-good finish from head to toe.',
     Candles:
-      "A gentle glow for slower evenings and softer starts. Light it when you want your space to feel a little more like yours.",
+      'A gentle glow for slower evenings and softer starts. Light it when you want your space to feel a little more like yours.',
     Tools:
-      "A simple, thoughtful tool designed to make your everyday routine feel easy, calming, and just a little more special.",
+      'A simple, thoughtful tool designed to make your everyday routine feel easy, calming, and just a little more special.',
   };
 
   return (
@@ -794,16 +808,18 @@ function Home({
 }) {
   const storyRef = useRef<HTMLElement | null>(null);
   const featuredRef = useRef<HTMLDivElement | null>(null);
-  const [storyVisible, setStoryVisible] = useState(false);
+  const [storyVisible, setStoryVisible] = useState(() => {
+    if (typeof window !== 'undefined' && !('IntersectionObserver' in window)) {
+      return true;
+    }
+    return false;
+  });
   const [featuredScrolledPastTwo, setFeaturedScrolledPastTwo] = useState(false);
 
   useEffect(() => {
     const section = storyRef.current;
     if (!section || storyVisible) return;
-    if (!("IntersectionObserver" in window)) {
-      setStoryVisible(true);
-      return;
-    }
+    if (!('IntersectionObserver' in window)) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -812,72 +828,45 @@ function Home({
           observer.disconnect();
         }
       },
-      { threshold: 0.4 },
+      { threshold: 0.4 }
     );
 
     observer.observe(section);
     return () => observer.disconnect();
   }, [storyVisible]);
 
-  function FlowerIcon({ size = 24 }: { size?: number }) {
-    return (
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M12 18.5C8.8 15.3 4.2 11.7 4.2 7.7c0-3.4 4.3-4.4 7.8 3.3" />
-        <path d="M12 18.5c3.2-3.2 7.8-6.8 7.8-10.8 0-3.4-4.3-4.4-7.8 3.3" />
-        <path d="M12 11c-3.2-5.8-1.9-7.5 0-7.5s3.2 1.7 0 7.5Z" />
-        <path d="M12 18.5c-2-3.7-3.7-7.3-3.7-11.4M12 18.5c2-3.7 3.7-7.3 3.7-11.4" />
-      </svg>
-    );
-  }
+  const isVercelEnv =
+    process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' ||
+    process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview';
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isVercelEnv, setIsVercelEnv] = useState(false);
-  const [passwordInput, setPasswordInput] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    // 1. If NOT Vercel, bypass security gate entirely
+    if (!isVercelEnv) return true;
 
-  useEffect(() => {
-    // 1. Check if running on Vercel deployment
-    const isVercel =
-      process.env.NEXT_PUBLIC_VERCEL_ENV === "production" ||
-      process.env.NEXT_PUBLIC_VERCEL_ENV === "preview";
-
-    setIsVercelEnv(isVercel);
-
-    // 2. If NOT Vercel, bypass security gate entirely
-    if (!isVercel) {
-      setIsAuthenticated(true);
-      return;
+    // 2. If on Vercel (in browser), check if already unlocked in this session
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('site_unlocked') === 'true';
     }
 
-    // 3. If Vercel, verify if token key exists in active session
-    if (sessionStorage.getItem("site_unlocked") === "true") {
-      setIsAuthenticated(true);
-    }
-  }, []);
+    return false;
+  });
+
+  const [passwordInput, setPasswordInput] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handlePasswordSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Change 'MySecret123' to your preferred password
-    if (passwordInput === "MySecret123") {
-      sessionStorage.setItem("site_unlocked", "true");
+    if (passwordInput === 'MySecret123') {
+      sessionStorage.setItem('site_unlocked', 'true');
       setIsAuthenticated(true);
-      setErrorMessage("");
+      setErrorMessage('');
     } else {
-      setErrorMessage("Incorrect password. Please try again.");
-      setPasswordInput("");
+      setErrorMessage('Incorrect password. Please try again.');
+      setPasswordInput('');
     }
-  }
+  };
 
   // If on Vercel and not logged in, render the Password Form
   if (isVercelEnv && !isAuthenticated) {
@@ -908,10 +897,10 @@ function Home({
                 value={passwordInput}
                 onChange={(e) => {
                   setPasswordInput(e.target.value);
-                  setErrorMessage("");
+                  setErrorMessage('');
                 }}
                 aria-describedby={
-                  errorMessage ? "preview-password-error" : undefined
+                  errorMessage ? 'preview-password-error' : undefined
                 }
                 aria-invalid={errorMessage ? true : undefined}
                 className="w-full px-4 py-3 border border-stone-300 rounded-lg text-sm bg-stone-50 placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-stone-600 focus:border-stone-600 transition-all text-center"
@@ -1005,7 +994,7 @@ function Home({
           onScroll={() => {
             const scroller = featuredRef.current;
             const thirdCard =
-              scroller?.querySelectorAll<HTMLElement>(".product-card")[2];
+              scroller?.querySelectorAll<HTMLElement>('.product-card')[2];
             const threshold =
               thirdCard && scroller
                 ? thirdCard.getBoundingClientRect().left -
@@ -1013,7 +1002,7 @@ function Home({
                   scroller.scrollLeft
                 : Infinity;
             setFeaturedScrolledPastTwo(
-              Boolean(scroller && scroller.scrollLeft >= threshold),
+              Boolean(scroller && scroller.scrollLeft >= threshold)
             );
           }}
         >
@@ -1031,7 +1020,7 @@ function Home({
               onClick={() =>
                 featuredRef.current?.scrollBy({
                   left: -featuredRef.current.clientWidth * 0.8,
-                  behavior: "smooth",
+                  behavior: 'smooth',
                 })
               }
             >
@@ -1044,7 +1033,7 @@ function Home({
             onClick={() =>
               featuredRef.current?.scrollBy({
                 left: featuredRef.current.clientWidth * 0.8,
-                behavior: "smooth",
+                behavior: 'smooth',
               })
             }
           >
@@ -1055,7 +1044,7 @@ function Home({
 
       <section
         ref={storyRef}
-        className={`category-story${storyVisible ? " is-visible" : ""}`}
+        className={`category-story${storyVisible ? ' is-visible' : ''}`}
       >
         <div className="story-image-shell">
           <Image
@@ -1071,7 +1060,7 @@ function Home({
           <Heading className="display-heading">
             Care for the skin
             <br />
-            you're in.
+            you&apos;re in.
           </Heading>
           <p>
             High-performance formulas and comforting textures chosen to make
@@ -1089,51 +1078,51 @@ function Home({
 
       <section className="marquee" aria-label="Our values">
         <div>
-          SMALL-BATCH BEAUTY{" "}
+          SMALL-BATCH BEAUTY{' '}
           <span>
             <Icon name="flower" size={28} />
           </span>
-          CULT-FAVORITE BRANDS{" "}
+          CULT-FAVORITE BRANDS{' '}
           <span>
             <Icon name="flower" size={28} />
           </span>
-          RITUALS FOR REAL LIFE{" "}
+          RITUALS FOR REAL LIFE{' '}
           <span>
             <Icon name="flower" size={28} />
           </span>
-          GOOD SKIN DAYS{" "}
+          GOOD SKIN DAYS{' '}
           <span>
             <Icon name="flower" size={28} />
           </span>
-          COLOR OUTSIDE THE LINES{" "}
+          COLOR OUTSIDE THE LINES{' '}
           <span>
             <Icon name="flower" size={28} />
           </span>
-          YOUR DAILY DOSE OF JOY{" "}
+          YOUR DAILY DOSE OF JOY{' '}
           <span>
             <Icon name="flower" size={28} />
           </span>
-          SMALL-BATCH BEAUTY{" "}
+          SMALL-BATCH BEAUTY{' '}
           <span>
             <Icon name="flower" size={28} />
           </span>
-          CULT-FAVORITE BRANDS{" "}
+          CULT-FAVORITE BRANDS{' '}
           <span>
             <Icon name="flower" size={28} />
           </span>
-          RITUALS FOR REAL LIFE{" "}
+          RITUALS FOR REAL LIFE{' '}
           <span>
             <Icon name="flower" size={28} />
           </span>
-          GOOD SKIN DAYS{" "}
+          GOOD SKIN DAYS{' '}
           <span>
             <Icon name="flower" size={28} />
           </span>
-          COLOR OUTSIDE THE LINES{" "}
+          COLOR OUTSIDE THE LINES{' '}
           <span>
             <Icon name="flower" size={28} />
           </span>
-          YOUR DAILY DOSE OF JOY{" "}
+          YOUR DAILY DOSE OF JOY{' '}
           <span>
             <Icon name="flower" size={28} />
           </span>
@@ -1179,52 +1168,52 @@ function Home({
 function BlogPage({ onNavigate }: { onNavigate: (page: string) => void }) {
   const news = [
     {
-      date: "September 24, 2026",
-      title: "The beauty launches catching our eye this month",
+      date: 'September 24, 2026',
+      title: 'The beauty launches catching our eye this month',
       copy: "CEW's September product watch surveys a month of new launches, where heritage, science, and playful ideas share the shelf.",
-      source: "CEW Product Watch",
-      href: "https://cew.org/beauty_news/cew-product-watch-september-2026/",
+      source: 'CEW Product Watch',
+      href: 'https://cew.org/beauty_news/cew-product-watch-september-2026/',
     },
     {
-      date: "September 10, 2026",
+      date: 'September 10, 2026',
       title: "A first look at September's new beauty launches",
       copy: "NewBeauty rounds up the month's debuts, including firsts from OLAPLEX and MAKE UP FOR EVER.",
-      source: "NewBeauty",
-      href: "https://www.newbeauty.com/view/launch-list-september-2026",
+      source: 'NewBeauty',
+      href: 'https://www.newbeauty.com/view/launch-list-september-2026',
     },
     {
-      date: "September 10, 2026",
-      title: "When skincare and makeup meet in the middle",
+      date: 'September 10, 2026',
+      title: 'When skincare and makeup meet in the middle',
       copy: "BeautyMatter's weekly launch notes spotlight the growing mix of makeup and skincare, from a mineral skin tint to a replenishing serum.",
-      source: "BeautyMatter",
-      href: "https://beautymatter.com/articles/2026-week-37-beauty-brand-and-product-launches",
+      source: 'BeautyMatter',
+      href: 'https://beautymatter.com/articles/2026-week-37-beauty-brand-and-product-launches',
     },
   ];
 
   const tutorials = [
     {
-      number: "01",
-      category: "SKINCARE HOW-TO",
+      number: '01',
+      category: 'SKINCARE HOW-TO',
       title: "Build a routine you'll actually keep",
-      copy: "Start with the steps you already enjoy. Keep the order simple, give each layer a moment, and add new products one at a time so you can find your rhythm.",
+      copy: 'Start with the steps you already enjoy. Keep the order simple, give each layer a moment, and add new products one at a time so you can find your rhythm.',
       steps: [
-        "Cleanse at your own pace",
-        "Choose a comfortable moisturizer",
-        "Finish with the daytime steps that work for you",
+        'Cleanse at your own pace',
+        'Choose a comfortable moisturizer',
+        'Finish with the daytime steps that work for you',
       ],
-      tone: "journal-tutorial-peach",
+      tone: 'journal-tutorial-peach',
     },
     {
-      number: "02",
-      category: "MAKEUP HOW-TO",
-      title: "Make soft color feel like you",
-      copy: "A little color goes a long way. Use a light hand, blend the edges, and build slowly until the finish feels right for your day.",
+      number: '02',
+      category: 'MAKEUP HOW-TO',
+      title: 'Make soft color feel like you',
+      copy: 'A little color goes a long way. Use a light hand, blend the edges, and build slowly until the finish feels right for your day.',
       steps: [
-        "Prep with a texture you like",
-        "Tap color on in thin layers",
-        "Soften the edges with clean fingertips or a brush",
+        'Prep with a texture you like',
+        'Tap color on in thin layers',
+        'Soften the edges with clean fingertips or a brush',
       ],
-      tone: "journal-tutorial-lavender",
+      tone: 'journal-tutorial-lavender',
     },
   ];
 
@@ -1256,7 +1245,7 @@ function BlogPage({ onNavigate }: { onNavigate: (page: string) => void }) {
       <section className="journal-section journal-news">
         <div className="journal-section-heading">
           <div>
-            <p className="kicker">What's happening out there</p>
+            <p className="kicker">What&apos;s happening out there</p>
             <Heading as="section">The beauty edit</Heading>
           </div>
           <span className="journal-updated">Updated September 2026</span>
@@ -1336,9 +1325,9 @@ function BlogPage({ onNavigate }: { onNavigate: (page: string) => void }) {
           <p className="kicker">A product we keep close</p>
           <Heading as="section">A softer start with Daily Cloud Cream</Heading>
           <p>
-            Good everyday care doesn't need a complicated routine. We picked
-            Daily Cloud Cream for the comforting feel and easy place it finds in
-            a morning or evening ritual.
+            Good everyday care doesn&apos;t need a complicated routine. We
+            picked Daily Cloud Cream for the comforting feel and easy place it
+            finds in a morning or evening ritual.
           </p>
           <NavLink
             page="product:1"
@@ -1396,20 +1385,20 @@ function ShopPage({
   const title =
     selectedBrand ||
     selected ||
-    (searchQuery ? "Search results" : "All beauty");
+    (searchQuery ? 'Search results' : 'All beauty');
   const normalizedSearch = searchQuery?.trim().toLowerCase();
   const shown = normalizedSearch
     ? products.filter((item) =>
         `${item.name} ${item.brand} ${item.category}`
           .toLowerCase()
-          .includes(normalizedSearch),
+          .includes(normalizedSearch)
       )
     : selectedBrand
       ? products.filter((item) => item.brand === selectedBrand)
-      : title === "All beauty"
+      : title === 'All beauty'
         ? products
-        : title === "New"
-          ? products.filter((item) => item.badge === "New")
+        : title === 'New'
+          ? products.filter((item) => item.badge === 'New')
           : products.filter((item) => item.category === title);
   return (
     <main className="listing-page">
@@ -1418,14 +1407,14 @@ function ShopPage({
           {searchQuery
             ? `Results for “${searchQuery}”`
             : selectedBrand
-              ? "The brand edit"
-              : "The Daze & Dewy edit"}
+              ? 'The brand edit'
+              : 'The Daze & Dewy edit'}
         </p>
         <Heading as="page" className="page-title">
           {title}
         </Heading>
         <p>
-          {shown.length} thoughtful {shown.length < 2 ? "find" : "finds"} for
+          {shown.length} thoughtful {shown.length < 2 ? 'find' : 'finds'} for
           your ritual
         </p>
       </div>
@@ -1433,9 +1422,9 @@ function ShopPage({
         {categories.map((category) => (
           <NavLink
             key={category}
-            page={category === "New" ? "new" : `category:${category}`}
+            page={category === 'New' ? 'new' : `category:${category}`}
             onNavigate={onNavigate}
-            className={category === title ? "active" : ""}
+            className={category === title ? 'active' : ''}
           >
             {category}
           </NavLink>
@@ -1443,7 +1432,7 @@ function ShopPage({
         <NavLink
           page="shop"
           onNavigate={onNavigate}
-          className={title === "All beauty" ? "active" : ""}
+          className={title === 'All beauty' ? 'active' : ''}
         >
           View all
         </NavLink>
@@ -1473,7 +1462,7 @@ function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
           observer.disconnect();
         }
       },
-      { threshold: 0.25 },
+      { threshold: 0.25 }
     );
     observer.observe(section);
     return () => observer.disconnect();
@@ -1485,7 +1474,7 @@ function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
 
     const revealWhenCentered = () => {
       const heading = section.parentElement?.querySelector(
-        ".manifesto .display-heading",
+        '.manifesto .display-heading'
       );
       if (!heading) return;
 
@@ -1498,17 +1487,17 @@ function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
 
       if (targetLineBottom <= window.innerHeight * 0.6) {
         setValuesVisible(true);
-        window.removeEventListener("scroll", revealWhenCentered);
-        window.removeEventListener("resize", revealWhenCentered);
+        window.removeEventListener('scroll', revealWhenCentered);
+        window.removeEventListener('resize', revealWhenCentered);
       }
     };
 
     revealWhenCentered();
-    window.addEventListener("scroll", revealWhenCentered, { passive: true });
-    window.addEventListener("resize", revealWhenCentered);
+    window.addEventListener('scroll', revealWhenCentered, { passive: true });
+    window.addEventListener('resize', revealWhenCentered);
     return () => {
-      window.removeEventListener("scroll", revealWhenCentered);
-      window.removeEventListener("resize", revealWhenCentered);
+      window.removeEventListener('scroll', revealWhenCentered);
+      window.removeEventListener('resize', revealWhenCentered);
     };
   }, [valuesVisible]);
 
@@ -1573,7 +1562,7 @@ function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
       </section>
       <section
         ref={valuesRef}
-        className={`values-grid${valuesVisible ? " is-visible" : ""}`}
+        className={`values-grid${valuesVisible ? ' is-visible' : ''}`}
       >
         <div>
           <Heading as="subsection">Curated, always</Heading>
@@ -1585,12 +1574,14 @@ function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
         </div>
         <div>
           <Heading as="subsection">Here to help</Heading>
-          <p>Warm advice, honest answers, and a studio door that's open.</p>
+          <p>
+            Warm advice, honest answers, and a studio door that&apos;s open.
+          </p>
         </div>
       </section>
       <section
         ref={ctaRef}
-        className={`about-cta${ctaVisible ? " is-visible" : ""}`}
+        className={`about-cta${ctaVisible ? ' is-visible' : ''}`}
       >
         <p className="kicker">Come say hello</p>
         <Heading className="display-heading">
@@ -1617,9 +1608,9 @@ function ContactPage() {
   return (
     <main className="contact-page">
       <section className="contact-intro">
-        <p className="kicker">We'd love to hear from you</p>
+        <p className="kicker">We&apos;d love to hear from you</p>
         <Heading as="page" className="page-title">
-          Let's talk beauty.
+          Let&apos;s talk beauty.
         </Heading>
         <p>
           Need a recommendation, have a question, or simply want to say hello?
@@ -1693,7 +1684,7 @@ function ContactPage() {
             />
           </label>
           <Action type="submit" className="form-submit">
-            {sent ? "Message sent — thank you" : "Send your note"}
+            {sent ? 'Message sent — thank you' : 'Send your note'}
             {sent ? null : <Icon name="arrow" size={18} />}
           </Action>
         </form>
@@ -1729,16 +1720,16 @@ function Footer({ onNavigate }: { onNavigate: (page: string) => void }) {
         <div className="footer-links">
           <div>
             <span>SHOP</span>
-            {["New", "Skincare", "Makeup", "Bath & Body", "Candles"].map(
+            {['New', 'Skincare', 'Makeup', 'Bath & Body', 'Candles'].map(
               (item) => (
                 <NavLink
                   key={item}
-                  page={item === "New" ? "new" : `category:${item}`}
+                  page={item === 'New' ? 'new' : `category:${item}`}
                   onNavigate={onNavigate}
                 >
                   {item}
                 </NavLink>
-              ),
+              )
             )}
           </div>
           <div>
@@ -1796,64 +1787,64 @@ function PolicyPage({
   page,
   onNavigate,
 }: {
-  page: "privacy" | "terms" | "shipping";
+  page: 'privacy' | 'terms' | 'shipping';
   onNavigate: (page: string) => void;
 }) {
   const content = {
     privacy: {
-      title: "Privacy, with care",
+      title: 'Privacy, with care',
       intro:
-        "Your trust matters to us. This sample privacy page describes, in broad strokes, how Daze & Dewy may handle information when you visit our little corner of the internet.",
+        'Your trust matters to us. This sample privacy page describes, in broad strokes, how Daze & Dewy may handle information when you visit our little corner of the internet.',
       sections: [
         [
-          "Information you share",
-          "If you write to us, join our mailing list, or place an order, you may choose to share details like your name, email address, and delivery information. This placeholder copy will be updated with the specific information our store collects.",
+          'Information you share',
+          'If you write to us, join our mailing list, or place an order, you may choose to share details like your name, email address, and delivery information. This placeholder copy will be updated with the specific information our store collects.',
         ],
         [
-          "How it may be used",
-          "Information may help us answer your questions, keep the shop running, and make your experience feel a little more personal. We will add details about our actual service providers and uses here.",
+          'How it may be used',
+          'Information may help us answer your questions, keep the shop running, and make your experience feel a little more personal. We will add details about our actual service providers and uses here.',
         ],
         [
-          "Your choices",
-          "You can contact us with questions about your information or ask to update your preferences. This sample text is not a complete account of your privacy rights or choices.",
+          'Your choices',
+          'You can contact us with questions about your information or ask to update your preferences. This sample text is not a complete account of your privacy rights or choices.',
         ],
       ],
     },
     terms: {
-      title: "A few ground rules",
+      title: 'A few ground rules',
       intro:
-        "These draft terms are a friendly placeholder for the guidelines that will apply when you browse or shop with Daze & Dewy.",
+        'These draft terms are a friendly placeholder for the guidelines that will apply when you browse or shop with Daze & Dewy.',
       sections: [
         [
-          "Using this site",
-          "Please use the shop in a considerate, lawful way. Product descriptions, imagery, and other site content are shared to help you explore our edit and may be updated as the shop grows.",
+          'Using this site',
+          'Please use the shop in a considerate, lawful way. Product descriptions, imagery, and other site content are shared to help you explore our edit and may be updated as the shop grows.',
         ],
         [
-          "Orders and availability",
-          "Any order details, pricing, availability, and purchase conditions will be shown during checkout. This sample page does not yet set out the complete terms of sale.",
+          'Orders and availability',
+          'Any order details, pricing, availability, and purchase conditions will be shown during checkout. This sample page does not yet set out the complete terms of sale.',
         ],
         [
-          "Questions",
-          "If something is unclear, send us a note through the contact page and we will be happy to help. Final terms will be posted here when ready.",
+          'Questions',
+          'If something is unclear, send us a note through the contact page and we will be happy to help. Final terms will be posted here when ready.',
         ],
       ],
     },
     shipping: {
-      title: "Shipping, made simple",
+      title: 'Shipping, made simple',
       intro:
-        "We want your finds to reach you smoothly. This sample page is a starting point for shipping information; the options shown at checkout will have the details for your order.",
+        'We want your finds to reach you smoothly. This sample page is a starting point for shipping information; the options shown at checkout will have the details for your order.',
       sections: [
         [
-          "Packing your order",
-          "We take care when preparing each order. Processing times and carrier details will be added here once our shipping schedule is finalized.",
+          'Packing your order',
+          'We take care when preparing each order. Processing times and carrier details will be added here once our shipping schedule is finalized.',
         ],
         [
-          "Rates and timing",
-          "Available shipping methods, delivery estimates, and costs depend on the destination and order. Review the options presented at checkout for your current order.",
+          'Rates and timing',
+          'Available shipping methods, delivery estimates, and costs depend on the destination and order. Review the options presented at checkout for your current order.',
         ],
         [
-          "Need a hand?",
-          "If you have a question about a delivery, contact us with your order details and we will help you find the next step.",
+          'Need a hand?',
+          'If you have a question about a delivery, contact us with your order details and we will help you find the next step.',
         ],
       ],
     },
@@ -1896,17 +1887,17 @@ function CartDrawer({
 }) {
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0,
+    0
   );
   const remaining = Math.max(0, 75 - subtotal);
   return (
     <>
       <div
-        className={`cart-overlay ${open ? "visible" : ""}`}
+        className={`cart-overlay ${open ? 'visible' : ''}`}
         onClick={onClose}
       />
       <aside
-        className={`cart-drawer ${open ? "open" : ""}`}
+        className={`cart-drawer ${open ? 'open' : ''}`}
         aria-label="Shopping bag"
       >
         <div className="cart-header">
@@ -1997,7 +1988,7 @@ function CartDrawer({
   );
 }
 
-type ShippingMethod = "standard" | "expedited";
+type ShippingMethod = 'standard' | 'expedited';
 
 type OrderDetails = {
   email: string;
@@ -2007,7 +1998,7 @@ type OrderDetails = {
 };
 
 function getShippingCost(subtotal: number, method: ShippingMethod) {
-  if (method === "expedited") return 18;
+  if (method === 'expedited') return 18;
   return subtotal >= 75 ? 0 : 6;
 }
 
@@ -2022,10 +2013,10 @@ function CheckoutPage({
   onContinue: (email: string, shipping: ShippingMethod) => void;
   onAddSuggestion: (product: Product) => void;
 }) {
-  const [shipping, setShipping] = useState<ShippingMethod>("standard");
+  const [shipping, setShipping] = useState<ShippingMethod>('standard');
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0,
+    0
   );
   const suggestions = products
     .filter((product) => !items.some((item) => item.id === product.id))
@@ -2046,7 +2037,7 @@ function CheckoutPage({
           onSubmit={(event) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
-            onContinue(String(formData.get("checkout_email")), shipping);
+            onContinue(String(formData.get('checkout_email')), shipping);
           }}
         >
           <p className="kicker">Your ritual, nearly there</p>
@@ -2135,22 +2126,22 @@ function CheckoutPage({
                   type="radio"
                   name="shipping_method"
                   value="standard"
-                  checked={shipping === "standard"}
-                  onChange={() => setShipping("standard")}
+                  checked={shipping === 'standard'}
+                  onChange={() => setShipping('standard')}
                 />
                 <span>
                   <strong>Standard shipping</strong>
                   <small>5–7 business days · USPS</small>
                 </span>
-                <b>{subtotal >= 75 ? "Free" : "$6.00"}</b>
+                <b>{subtotal >= 75 ? 'Free' : '$6.00'}</b>
               </label>
               <label className="shipping-option">
                 <input
                   type="radio"
                   name="shipping_method"
                   value="expedited"
-                  checked={shipping === "expedited"}
-                  onChange={() => setShipping("expedited")}
+                  checked={shipping === 'expedited'}
+                  onChange={() => setShipping('expedited')}
                 />
                 <span>
                   <strong>Expedited shipping</strong>
@@ -2193,7 +2184,7 @@ function CheckoutPage({
             <span>Shipping</span>
             <strong>
               {getShippingCost(subtotal, shipping) === 0
-                ? "Free"
+                ? 'Free'
                 : `$${getShippingCost(subtotal, shipping).toFixed(2)}`}
             </strong>
           </div>
@@ -2240,11 +2231,11 @@ function PaymentPage({
 }) {
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0,
+    0
   );
   const shippingCost = getShippingCost(subtotal, shipping);
   const shippingLabel =
-    shipping === "expedited" ? "FedEx expedited" : "Standard shipping";
+    shipping === 'expedited' ? 'FedEx expedited' : 'Standard shipping';
   return (
     <main className="checkout-page">
       <CheckoutTopline onNavigate={onNavigate} />
@@ -2310,7 +2301,7 @@ function PaymentPage({
             </div>
           </section>
           <Action className="checkout-button checkout-continue" type="submit">
-            Pay ${(subtotal + shippingCost).toFixed(2)}{" "}
+            Pay ${(subtotal + shippingCost).toFixed(2)}{' '}
             <Icon name="arrow" size={18} />
           </Action>
         </form>
@@ -2338,7 +2329,7 @@ function PaymentPage({
           <div className="checkout-summary-total checkout-shipping-total">
             <span>{shippingLabel}</span>
             <strong>
-              {shippingCost === 0 ? "Free" : `$${shippingCost.toFixed(2)}`}
+              {shippingCost === 0 ? 'Free' : `$${shippingCost.toFixed(2)}`}
             </strong>
           </div>
           <div className="checkout-summary-total payment-grand-total">
@@ -2426,27 +2417,27 @@ function OrderConfirmationPage({
 }
 
 export default function App() {
-  const [page, setPage] = useState("home");
+  const [page, setPage] = useState('home');
   const [cartOpen, setCartOpen] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [checkoutEmail, setCheckoutEmail] = useState("");
+  const [checkoutEmail, setCheckoutEmail] = useState('');
   const [checkoutShipping, setCheckoutShipping] =
-    useState<ShippingMethod>("standard");
+    useState<ShippingMethod>('standard');
   const [confirmedOrder, setConfirmedOrder] = useState<OrderDetails | null>(
-    null,
+    null
   );
 
   useEffect(() => {
-    const onHash = () => setPage(window.location.hash.slice(1) || "home");
+    const onHash = () => setPage(window.location.hash.slice(1) || 'home');
     onHash();
-    window.addEventListener("hashchange", onHash);
-    return () => window.removeEventListener("hashchange", onHash);
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
   function navigate(next: string) {
     setPage(next);
-    window.history.pushState(null, "", `#${next}`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.history.pushState(null, '', `#${next}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function searchProducts(query: string) {
@@ -2460,7 +2451,7 @@ export default function App() {
         ? current.map((item) =>
             item.id === product.id
               ? { ...item, quantity: item.quantity + quantity }
-              : item,
+              : item
           )
         : [...current, { ...product, quantity }];
     });
@@ -2471,9 +2462,9 @@ export default function App() {
     setCart((current) =>
       current
         .map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity + change } : item,
+          item.id === id ? { ...item, quantity: item.quantity + change } : item
         )
-        .filter((item) => item.quantity > 0),
+        .filter((item) => item.quantity > 0)
     );
   }
 
@@ -2484,7 +2475,7 @@ export default function App() {
         ? current.map((item) =>
             item.id === product.id
               ? { ...item, quantity: item.quantity + 1 }
-              : item,
+              : item
           )
         : [...current, { ...product, quantity: 1 }];
     });
@@ -2492,7 +2483,7 @@ export default function App() {
 
   function completeOrder() {
     const deliveryDate = new Date();
-    let businessDays = checkoutShipping === "expedited" ? 3 : 7;
+    let businessDays = checkoutShipping === 'expedited' ? 3 : 7;
     while (businessDays > 0) {
       deliveryDate.setDate(deliveryDate.getDate() + 1);
       if (deliveryDate.getDay() !== 0 && deliveryDate.getDay() !== 6)
@@ -2502,24 +2493,24 @@ export default function App() {
       email: checkoutEmail,
       shipping: checkoutShipping,
       orderNumber: `DD-${Date.now().toString().slice(-8)}`,
-      estimatedDelivery: deliveryDate.toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
+      estimatedDelivery: deliveryDate.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
       }),
     });
     setCart([]);
-    navigate("confirmation");
+    navigate('confirmation');
   }
 
   let content;
-  if (page === "home") {
+  if (page === 'home') {
     content = <Home onNavigate={navigate} onAdd={addToCart} />;
-  } else if (page === "about") {
+  } else if (page === 'about') {
     content = <AboutPage onNavigate={navigate} />;
-  } else if (page === "contact") {
+  } else if (page === 'contact') {
     content = <ContactPage />;
-  } else if (page === "checkout") {
+  } else if (page === 'checkout') {
     content = (
       <CheckoutPage
         items={cart}
@@ -2527,12 +2518,12 @@ export default function App() {
         onContinue={(email, shipping) => {
           setCheckoutEmail(email);
           setCheckoutShipping(shipping);
-          navigate("payment");
+          navigate('payment');
         }}
         onAddSuggestion={addCheckoutSuggestion}
       />
     );
-  } else if (page === "payment") {
+  } else if (page === 'payment') {
     content = (
       <PaymentPage
         items={cart}
@@ -2542,46 +2533,46 @@ export default function App() {
         onComplete={completeOrder}
       />
     );
-  } else if (page === "confirmation" && confirmedOrder) {
+  } else if (page === 'confirmation' && confirmedOrder) {
     content = (
       <OrderConfirmationPage order={confirmedOrder} onNavigate={navigate} />
     );
-  } else if (page === "blog") {
+  } else if (page === 'blog') {
     content = <BlogPage onNavigate={navigate} />;
-  } else if (page === "privacy" || page === "terms" || page === "shipping") {
+  } else if (page === 'privacy' || page === 'terms' || page === 'shipping') {
     content = <PolicyPage page={page} onNavigate={navigate} />;
-  } else if (page === "new") {
+  } else if (page === 'new') {
     content = (
       <ShopPage selected="New" onNavigate={navigate} onAdd={addToCart} />
     );
-  } else if (page.startsWith("product:")) {
-    const productId = Number(page.slice("product:".length));
+  } else if (page.startsWith('product:')) {
+    const productId = Number(page.slice('product:'.length));
     const product = products.find((item) => item.id === productId);
     content = product ? (
       <ProductPage product={product} onNavigate={navigate} onAdd={addToCart} />
     ) : (
       <ShopPage onNavigate={navigate} onAdd={addToCart} />
     );
-  } else if (page.startsWith("category:")) {
+  } else if (page.startsWith('category:')) {
     content = (
       <ShopPage
-        selected={page.replace("category:", "")}
+        selected={page.replace('category:', '')}
         onNavigate={navigate}
         onAdd={addToCart}
       />
     );
-  } else if (page.startsWith("brand:")) {
+  } else if (page.startsWith('brand:')) {
     content = (
       <ShopPage
-        selectedBrand={decodeURIComponent(page.slice("brand:".length))}
+        selectedBrand={decodeURIComponent(page.slice('brand:'.length))}
         onNavigate={navigate}
         onAdd={addToCart}
       />
     );
-  } else if (page.startsWith("search:")) {
+  } else if (page.startsWith('search:')) {
     content = (
       <ShopPage
-        searchQuery={decodeURIComponent(page.slice("search:".length))}
+        searchQuery={decodeURIComponent(page.slice('search:'.length))}
         onNavigate={navigate}
         onAdd={addToCart}
       />
@@ -2609,7 +2600,7 @@ export default function App() {
         onQuantity={changeQuantity}
         onCheckout={() => {
           setCartOpen(false);
-          navigate("checkout");
+          navigate('checkout');
         }}
       />
     </div>
