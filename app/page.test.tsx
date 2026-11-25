@@ -1,6 +1,7 @@
 import {
   act,
   cleanup,
+  fireEvent,
   render,
   screen,
   waitFor,
@@ -201,6 +202,44 @@ describe('storefront accessibility and keyboard interactions', () => {
 
     const marquee = await screen.findByRole('region', { name: 'Our values' });
     expect(marquee.querySelectorAll('.marquee-group')).toHaveLength(2);
+  });
+
+  it('shows featured scroll arrows at the correct scroll boundaries', async () => {
+    render(<App />);
+
+    const productName = await screen.findByRole('heading', {
+      name: 'Daily Cloud Cream',
+    });
+    const scroller = productName.closest('.featured-scroller');
+    expect(scroller).toBeTruthy();
+    if (!(scroller instanceof HTMLElement)) throw new Error('Missing scroller');
+
+    Object.defineProperty(scroller, 'clientWidth', {
+      configurable: true,
+      value: 400,
+    });
+    Object.defineProperty(scroller, 'scrollWidth', {
+      configurable: true,
+      value: 1200,
+    });
+    fireEvent.resize(window);
+
+    const leftArrowName = 'Scroll back to earlier featured products';
+    const rightArrowName = 'Scroll to more featured products';
+    expect(screen.queryByRole('button', { name: leftArrowName })).toBeNull();
+    expect(screen.getByRole('button', { name: rightArrowName })).toBeTruthy();
+
+    scroller.scrollLeft = 120;
+    fireEvent.scroll(scroller);
+    expect(screen.getByRole('button', { name: leftArrowName })).toBeTruthy();
+
+    scroller.scrollLeft = 0;
+    fireEvent.scroll(scroller);
+    expect(screen.queryByRole('button', { name: leftArrowName })).toBeNull();
+
+    scroller.scrollLeft = 800;
+    fireEvent.scroll(scroller);
+    expect(screen.queryByRole('button', { name: rightArrowName })).toBeNull();
   });
 
   it('dismisses the cart with its named semantic overlay button', async () => {

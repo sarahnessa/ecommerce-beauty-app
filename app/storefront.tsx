@@ -1016,7 +1016,25 @@ function Home({
     }
     return false;
   });
-  const [featuredScrolledPastTwo, setFeaturedScrolledPastTwo] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const updateFeaturedScrollState = () => {
+    const scroller = featuredRef.current;
+    if (!scroller) return;
+
+    setCanScrollLeft(scroller.scrollLeft > 4);
+    setCanScrollRight(
+      scroller.scrollLeft + scroller.clientWidth < scroller.scrollWidth - 4
+    );
+  };
+
+  useEffect(() => {
+    updateFeaturedScrollState();
+    window.addEventListener('resize', updateFeaturedScrollState);
+    return () =>
+      window.removeEventListener('resize', updateFeaturedScrollState);
+  }, []);
 
   useEffect(() => {
     const section = storyRef.current;
@@ -1096,20 +1114,7 @@ function Home({
         <div
           className="featured-scroller"
           ref={featuredRef}
-          onScroll={() => {
-            const scroller = featuredRef.current;
-            const thirdCard =
-              scroller?.querySelectorAll<HTMLElement>('.product-card')[2];
-            const threshold =
-              thirdCard && scroller
-                ? thirdCard.getBoundingClientRect().left -
-                  scroller.getBoundingClientRect().left +
-                  scroller.scrollLeft
-                : Infinity;
-            setFeaturedScrolledPastTwo(
-              Boolean(scroller && scroller.scrollLeft >= threshold)
-            );
-          }}
+          onScroll={updateFeaturedScrollState}
         >
           <ProductGrid
             items={products.slice(0, 9)}
@@ -1118,7 +1123,7 @@ function Home({
           />
         </div>
         <div className="featured-scroll-controls">
-          {featuredScrolledPastTwo && (
+          {canScrollLeft && (
             <Action
               className="featured-scroll-next featured-scroll-back"
               ariaLabel="Scroll back to earlier featured products"
@@ -1132,18 +1137,20 @@ function Home({
               <Icon name="arrow" size={21} />
             </Action>
           )}
-          <Action
-            className="featured-scroll-next"
-            ariaLabel="Scroll to more featured products"
-            onClick={() =>
-              featuredRef.current?.scrollBy({
-                left: featuredRef.current.clientWidth * 0.8,
-                behavior: 'smooth',
-              })
-            }
-          >
-            <Icon name="arrow" size={21} />
-          </Action>
+          {canScrollRight && (
+            <Action
+              className="featured-scroll-next"
+              ariaLabel="Scroll to more featured products"
+              onClick={() =>
+                featuredRef.current?.scrollBy({
+                  left: featuredRef.current.clientWidth * 0.8,
+                  behavior: 'smooth',
+                })
+              }
+            >
+              <Icon name="arrow" size={21} />
+            </Action>
+          )}
         </div>
       </section>
 
