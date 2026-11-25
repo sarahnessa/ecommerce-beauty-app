@@ -137,6 +137,28 @@ describe('storefront accessibility and keyboard interactions', () => {
     ).toContain('noopener');
   });
 
+  it('shows Tools in the shop category navigation and filters its products', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole('link', { name: 'Shop' }));
+    expect(
+      await screen.findByRole('heading', { name: 'All beauty' })
+    ).toBeTruthy();
+
+    const toolsLinks = screen.getAllByRole('link', { name: 'Tools' });
+    expect(toolsLinks.length).toBeGreaterThanOrEqual(2);
+    await user.click(toolsLinks[0]);
+
+    expect(await screen.findByRole('heading', { name: 'Tools' })).toBeTruthy();
+    expect(
+      screen.getByRole('heading', { name: 'Smooth Stone Tool' })
+    ).toBeTruthy();
+    expect(
+      screen.queryByRole('heading', { name: 'Daily Cloud Cream' })
+    ).toBeNull();
+  });
+
   it('supports keyboard selection in search suggestions', async () => {
     const user = userEvent.setup();
     render(<App />);
@@ -263,6 +285,80 @@ describe('storefront accessibility and keyboard interactions', () => {
     );
     expect(within(cart).getByText('$84.00')).toBeTruthy();
   });
+
+  it.each([
+    {
+      productId: 1,
+      category: 'Skincare',
+      firstLine: 'Chosen with care.',
+      secondLine: 'Made for your everyday.',
+    },
+    {
+      productId: 2,
+      category: 'Makeup',
+      firstLine: 'Color outside the lines.',
+      secondLine: 'Softly worn, all yours.',
+    },
+    {
+      productId: 4,
+      category: 'Bath & Body',
+      firstLine: 'Slow down and soak it in.',
+      secondLine: 'Comfort from head to toe.',
+    },
+    {
+      productId: 5,
+      category: 'Candles',
+      firstLine: 'Light a little warmth.',
+      secondLine: 'Made for slower evenings.',
+    },
+    {
+      productId: 8,
+      category: 'Tools',
+      firstLine: 'Thoughtful by design.',
+      secondLine: 'An easy lift for daily rituals.',
+    },
+  ])(
+    'shows the $category note and switches between product gallery views',
+    async ({ productId, category, firstLine, secondLine }) => {
+      const user = userEvent.setup();
+      window.location.hash = `#product:${productId}`;
+      render(<App />);
+
+      await screen.findByText(`${category} · The Daze & Dewy edit`);
+      const productName = screen.getByRole('heading', { level: 1 }).textContent;
+      const detailButton = screen.getByRole('button', {
+        name: 'View detail product image',
+      });
+      await user.click(detailButton);
+      expect(detailButton.getAttribute('aria-pressed')).toBe('true');
+      const mainGalleryButton = screen.getByRole('button', {
+        name: 'View main product image',
+      });
+      const detailStageImage = within(mainGalleryButton).getByRole('img', {
+        name: productName ?? '',
+      });
+      expect(detailStageImage.getAttribute('style')).not.toContain('transform');
+
+      const noteButton = screen.getByRole('button', {
+        name: 'View editorial note',
+      });
+      expect(noteButton.textContent).toContain(firstLine);
+      expect(noteButton.textContent).toContain(secondLine);
+      await user.click(noteButton);
+
+      expect(mainGalleryButton.getAttribute('aria-pressed')).toBe('false');
+      expect(mainGalleryButton.textContent).toContain(firstLine);
+      expect(mainGalleryButton.textContent).toContain(secondLine);
+
+      await user.click(mainGalleryButton);
+      expect(mainGalleryButton.getAttribute('aria-pressed')).toBe('true');
+      expect(
+        within(mainGalleryButton).getByRole('img', {
+          name: productName ?? '',
+        })
+      ).toBeTruthy();
+    }
+  );
 
   it('completes checkout and payment after switching shipping methods', async () => {
     const user = userEvent.setup();

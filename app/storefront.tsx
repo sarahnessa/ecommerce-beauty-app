@@ -204,7 +204,14 @@ const products: Product[] = [
   },
 ];
 
-const categories = ['New', 'Skincare', 'Makeup', 'Bath & Body', 'Candles'];
+const categories = [
+  'New',
+  'Skincare',
+  'Makeup',
+  'Bath & Body',
+  'Candles',
+  'Tools',
+];
 const marqueePhrases = [
   'SMALL-BATCH BEAUTY',
   'CULT-FAVORITE BRANDS',
@@ -725,6 +732,67 @@ function ProductPage({
   onAdd: (product: Product, quantity?: number) => void;
 }) {
   const [quantity, setQuantity] = useState(1);
+  const [galleryState, setGalleryState] = useState<{
+    productId: Product['id'];
+    view: 'main' | 'detail' | 'note';
+  }>({ productId: product.id, view: 'main' });
+  const activeGalleryView =
+    galleryState.productId === product.id ? galleryState.view : 'main';
+  const editorialNotes: Record<
+    string,
+    { tone: string; icon: ReactNode; firstLine: string; secondLine: string }
+  > = {
+    Skincare: {
+      tone: 'skincare',
+      icon: '✿',
+      firstLine: 'Chosen with care.',
+      secondLine: 'Made for your everyday.',
+    },
+    Makeup: {
+      tone: 'makeup',
+      icon: '✦',
+      firstLine: 'Color outside the lines.',
+      secondLine: 'Softly worn, all yours.',
+    },
+    'Bath & Body': {
+      tone: 'bath-body',
+      icon: (
+        <svg
+          width="42"
+          height="42"
+          viewBox="0 0 42 42"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M11 33C18 25 23 18 30 8" />
+          <path d="M16 27c-5-1-8-4-8-8 5 0 8 3 8 8Z" />
+          <path d="M22 19c-1-5 1-9 5-11 2 5 0 9-5 11Z" />
+          <path d="M27 13c2-4 6-6 10-5-1 5-5 7-10 5Z" />
+          <path d="M12 32c-3 0-5 2-6 5" />
+        </svg>
+      ),
+      firstLine: 'Slow down and soak it in.',
+      secondLine: 'Comfort from head to toe.',
+    },
+    Candles: {
+      tone: 'candles',
+      icon: '✺',
+      firstLine: 'Light a little warmth.',
+      secondLine: 'Made for slower evenings.',
+    },
+    Tools: {
+      tone: 'tools',
+      icon: '✾',
+      firstLine: 'Thoughtful by design.',
+      secondLine: 'An easy lift for daily rituals.',
+    },
+  };
+  const editorialNote =
+    editorialNotes[product.category] ?? editorialNotes.Skincare;
   const related = products.filter((item) => item.id !== product.id).slice(0, 4);
   const categoryCopy: Record<string, string> = {
     Skincare:
@@ -757,37 +825,78 @@ function ProductPage({
           className="product-gallery"
           aria-label={`${product.name} product images`}
         >
-          <div className="product-gallery-main">
-            <Image
-              width={900}
-              height={900}
-              src={product.image}
-              alt={product.name}
-            />
-            {product.badge && (
-              <span className={`product-badge ${product.badge.toLowerCase()}`}>
-                {product.badge}
-              </span>
+          <button
+            type="button"
+            className={`product-gallery-main${activeGalleryView === 'note' ? ` product-gallery-note product-gallery-note--${editorialNote.tone}` : ''}`}
+            aria-label="View main product image"
+            aria-pressed={activeGalleryView === 'main'}
+            onClick={() =>
+              setGalleryState({ productId: product.id, view: 'main' })
+            }
+          >
+            {activeGalleryView === 'note' ? (
+              <>
+                <span className="flower-mark" aria-hidden="true">
+                  {editorialNote.icon}
+                </span>
+                <p>
+                  {editorialNote.firstLine}
+                  <br />
+                  {editorialNote.secondLine}
+                </p>
+              </>
+            ) : (
+              <>
+                <Image
+                  width={900}
+                  height={900}
+                  src={product.image}
+                  alt={product.name}
+                />
+                {activeGalleryView === 'main' && product.badge && (
+                  <span
+                    className={`product-badge ${product.badge.toLowerCase()}`}
+                  >
+                    {product.badge}
+                  </span>
+                )}
+              </>
             )}
-          </div>
-          <div className="product-gallery-detail">
+          </button>
+          <button
+            type="button"
+            className="product-gallery-detail"
+            aria-label="View detail product image"
+            aria-pressed={activeGalleryView === 'detail'}
+            onClick={() =>
+              setGalleryState({ productId: product.id, view: 'detail' })
+            }
+          >
             <Image
               width={900}
               height={900}
               src={product.image}
               alt={`${product.name}, close-up`}
             />
-          </div>
-          <div className="product-gallery-note">
+          </button>
+          <button
+            type="button"
+            className={`product-gallery-note product-gallery-note--${editorialNote.tone}`}
+            aria-label="View editorial note"
+            aria-pressed={activeGalleryView === 'note'}
+            onClick={() =>
+              setGalleryState({ productId: product.id, view: 'note' })
+            }
+          >
             <span className="flower-mark" aria-hidden="true">
-              ✿
+              {editorialNote.icon}
             </span>
             <p>
-              Chosen with care.
+              {editorialNote.firstLine}
               <br />
-              Made for your everyday.
+              {editorialNote.secondLine}
             </p>
-          </div>
+          </button>
         </div>
         <div className="product-purchase-panel">
           <p className="kicker">{product.category} · The Daze & Dewy edit</p>
@@ -1682,17 +1791,22 @@ function Footer({ onNavigate }: { onNavigate: (page: string) => void }) {
         <div className="footer-links">
           <div>
             <span>SHOP</span>
-            {['New', 'Skincare', 'Makeup', 'Bath & Body', 'Candles'].map(
-              (item) => (
-                <NavLink
-                  key={item}
-                  page={item === 'New' ? 'new' : `category:${item}`}
-                  onNavigate={onNavigate}
-                >
-                  {item}
-                </NavLink>
-              )
-            )}
+            {[
+              'New',
+              'Skincare',
+              'Makeup',
+              'Bath & Body',
+              'Candles',
+              'Tools',
+            ].map((item) => (
+              <NavLink
+                key={item}
+                page={item === 'New' ? 'new' : `category:${item}`}
+                onNavigate={onNavigate}
+              >
+                {item}
+              </NavLink>
+            ))}
           </div>
           <div>
             <span>DAZE & DEWY</span>
