@@ -1,5 +1,24 @@
-.next
+# Build & Coverage Outputs
+dist
+dist-ssr
+coverage
+
+# Dependencies & Lockfiles
 node_modules
-out
-build
 package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Git Hooks
+.husky
+
+# Environment & Local Configs
+.env
+.env.*
+!.env.example
+.vscode/
+
+# Static Assets & Logs
+public
+*.log
+.DS_Store

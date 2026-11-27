@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 AGENTS.md
+.prettierrc
+.vscode/*
+!.vscode/extensions.json
 
 # debug
 npm-debug.log*
